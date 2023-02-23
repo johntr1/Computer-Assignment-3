@@ -15,10 +15,10 @@ class TheTable(QWidget):  # A group box might be nice here, lets of but a border
         raise_button = QPushButton("Raise")
 
 
-        gbox = QGridLayout()
-        gbox.addWidget(call_button, 3,1)
-        gbox.addWidget(fold_button,3 ,2)
-        gbox.addWidget(raise_button, 3, 3)
+        gbox = QHBoxLayout()
+        gbox.addWidget(call_button)
+        gbox.addWidget(fold_button)
+        gbox.addWidget(raise_button)
         gbox.addLayout(gbox)
 
 
