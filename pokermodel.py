@@ -79,6 +79,9 @@ class TexasHoldEm:
         self.players[self.big_blind + 1]
 
 
+    def choose(self):
+
+
     def call(self, player):
 
         index = self.players.index(player)-1
@@ -107,7 +110,9 @@ class TexasHoldEm:
 
 
 
-    def remove_player(self, player):
+    def remove_active_player(self, player):
+
+
 
 
 
