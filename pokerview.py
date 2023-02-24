@@ -10,6 +10,8 @@ import sys
 # QMessageBox
 # QErrorMessage
 
+
+
 class PlayerView(QGroupBox):
     def __init__(self, num, player):
         super().__init__()

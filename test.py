@@ -35,7 +35,12 @@ qt_app.exec_()
 
 
 
-
+#en window som frågar om namn på 2 spelare
+#en table som kan visa alla korten, sina pengar och motståndarens pengar. vad motståndaren har ökat med om de har ökat.
+#vad potten ligger på. Namnen, raise, fold, call,
+#en (pop up) för vad man vill raisea med och om man har skrivit in för mycket eller inte en siffra
+#x won x money fönster för varje pot
+#x won the game fönster när det bara är en person med pengar kvar
 
 
 

@@ -18,7 +18,7 @@ class Player(QObject):
         self.hand = Hand()
         return self.hand
 
-    def in_pot(self):
+    def player_pot(self):
         return self.in_pot()
 
     def change_player_pot(self, amount):
