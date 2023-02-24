@@ -17,6 +17,9 @@ class PlayerView(QGroupBox):
         super().__init__()
 
 
+
+
+
 app = QApplication([])
 app.setStyle('Fusion')
 
@@ -39,3 +42,8 @@ window = QWidget()
 window.setLayout(layout)
 window.show()
 app.exec()
+
+
+# Runs all classes
+class PokerView(QWidget):
+    '
