@@ -19,10 +19,13 @@ class Player(QObject):
         return self.hand
 
     def player_pot(self):
-        return self.in_pot()
+        return self.player_pot()
 
     def change_player_pot(self, amount):
         self.in_pot = self.in_pot + amount
+
+    def check_money(self):
+        return self.money
 
     def change_money(self, amount):
         self.money = self.money + amount
@@ -47,17 +50,21 @@ class TexasHoldEm:
 
 
     def hand_out_cards(self):
+
         self.deck = StandardDeck()
         self.deck = self.deck.shuffle()
 
         #reset in_pot to 0 for all players
+        #maybe only give cards to the players with money? [i for i, x in enumerate(count) if x == 4]
 
         for player in self.players():
             hand = player.create_new_hand()
             for j in range(2):
                 hand.add_card(self.deck.draw())
 
-        self.big_and_little_blind()
+        for i in range(len(self.players)):
+            self.active_players[i]=1
+
 
 
     def big_and_little_blind(self):
@@ -76,10 +83,45 @@ class TexasHoldEm:
 
     def pre_flop(self):
 
-        self.players[self.big_blind + 1]
+        player_turn = self.big_blind + 1
+        raiser = self.big_blind
+        while not raiser == player_turn:
+
+            chosen = self.choose(self.players[player_turn])
+            player_turn = player_turn + 1
+            if chosen == "raise":
+                raiser = player_turn
 
 
-    def choose(self):
+
+
+
+
+    def flop(self):
+
+
+    def Turn(self):
+
+
+    def River(self):
+
+    def Showdown(self):
+
+
+
+    def check_play(self):
+
+
+    def choose(self, player):
+        print('What do you want to do?')
+        #the input
+        if input == call:
+            self.call(player)
+        elif input == poker_rasie:
+            self.poker_raise(player)
+            return  "raise"
+        elif input == fold:
+            self.fold(player)
 
 
     def call(self, player):
@@ -90,6 +132,7 @@ class TexasHoldEm:
             self.pot = self.pot + diff
             player.change_player_pot(diff)
             player.change_money(-diff)
+
 
 
     def poker_raise(self, player):
@@ -104,19 +147,17 @@ class TexasHoldEm:
         player.change_money(-amount)
 
 
-    def fold(self):
+    def fold(self, player):
 
-
-
-
+        self.remove_active_player(player)
 
     def remove_active_player(self, player):
+        self.active_players[self.players.index(player)] = 0
 
 
+    def pot_winner(self):
 
-
-
-
+    def game_winner(self):
 
 
 
