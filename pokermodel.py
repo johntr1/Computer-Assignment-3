@@ -19,10 +19,13 @@ class Player(QObject):
         return self.hand
 
     def player_pot(self):
-        return self.player_pot()
+        return self.player_pot
 
     def change_player_pot(self, amount):
         self.in_pot = self.in_pot + amount
+
+    def reset_player_pot(self):
+        self.player_pot = 0
 
     def check_money(self):
         return self.money
@@ -39,13 +42,32 @@ class TexasHoldEm:
         self.active_players =[]
         self.pot = 0
         self.deck = None
+        self.community_cards = []
         self.big_blind_player = 0
 
 
         #start the gui and for players and names
-        #reset active players
 
-        self.hand_out_cards()
+        while True:#While 2 people have money
+
+            for player in self.players:
+                player.reset_player_pot()
+
+            for i in range(len(self.players)): #Resets the active players
+                self.active_players.append(1)
+
+            for i, j in enumerate(self.players): # If the player has no money she/he is not an active player
+                if j.check_money() == 0:
+                    self.active_players[i] = 0
+
+            self.hand_out_cards()
+
+
+
+
+
+
+            self.big_blind_player = 1 + self.big_blind_player
 
 
 
@@ -55,62 +77,94 @@ class TexasHoldEm:
         self.deck = self.deck.shuffle()
 
         #reset in_pot to 0 for all players
-        #maybe only give cards to the players with money? [i for i, x in enumerate(count) if x == 4]
-
-        for player in self.players():
+        for i, player in enumerate(self.players()):
+            if self.active_players[i] == 0: # Only gives cards to active players
+                continue
             hand = player.create_new_hand()
             for j in range(2):
                 hand.add_card(self.deck.draw())
 
-        for i in range(len(self.players)):
-            self.active_players[i]=1
-
-
 
     def big_and_little_blind(self):
+
+        for i in len(self.active_players): #checks if the big blind player is active
+            if self.active_players[self.big_blind_player + i] == 1:
+                self.big_blind_player = self.big_blind_player + i
+                break
 
         #big blind
         amount = 100
         self.pot = self.pot + amount
-        self.players[self.big_blind].change_in_pot(amount)
-        self.players[self.big_blind].change_money(-amount)
+        self.players[self.big_blind_player].change_in_pot(amount)
+        self.players[self.big_blind_player].change_money(-amount)
 
         #small blind
         amount = 50
         self.pot = self.pot + amount
-        self.players[self.big_blind-1].change_in_pot(amount)
-        self.players[self.big_blind-1].change_money(-amount)
+        self.players[self.big_blind_player-1].change_in_pot(amount)
+        self.players[self.big_blind_player-1].change_money(-amount)
 
     def pre_flop(self):
-
-        player_turn = self.big_blind + 1
-        raiser = self.big_blind
-        while not raiser == player_turn:
-
-            chosen = self.choose(self.players[player_turn])
-            player_turn = player_turn + 1
-            if chosen == "raise":
-                raiser = player_turn
-
-
-
+        self.betting_round()
 
 
 
     def flop(self):
+        community_cards = []
+        for i in range(3):
+            community_cards.append(self.deck.draw)
+        #Show 3 community_cards
+        self.betting_round()
 
+    def Turn(self,community_cards):
 
-    def Turn(self):
-
+        #show 1 community_card
+        self.betting_round()
 
     def River(self):
+        #show 1 community_card
+        self.betting_round()
 
     def Showdown(self):
 
 
 
-    def check_play(self):
+    def betting_round(self):
+        player_turn = self.big_blind_player + 1
+        raiser = player_turn
 
+        while True:
+
+            for i in len(self.active_players):  # checks if the turn_player is an active player
+                if self.active_players[player_turn + i] == 1:
+                    player_turn = player_turn + i
+                    break
+
+            chosen = self.choose(self.players[player_turn])
+            player_turn = player_turn + 1
+
+            if chosen == "raise":
+                raiser = player_turn
+
+            if raiser == player_turn:
+                break
+
+    def check_play(self):
+        if sum(self.active_players) <= 1:
+            return False
+        else:
+            return True
+
+    def check_game(self):
+
+        list = []
+        for player in self.players:  #checks if more than one person has money
+            if not player.check_money() == 0:
+                list.append(1)
+        if sum(list) <= 1:
+            return False
+        else:
+            return True
 
     def choose(self, player):
         print('What do you want to do?')
