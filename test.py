@@ -42,6 +42,15 @@ qt_app.exec_()
 #x won x money fönster för varje pot
 #x won the game fönster när det bara är en person med pengar kvar
 
+list = [1, 1, 0, 1]
+alist = []
+for i in range(len(list)):
+    alist.append(1)
 
+print(alist)
+for i, j in enumerate(list):
+    if j == 1:
+        alist[i] = 0
 
+print(alist)
 
