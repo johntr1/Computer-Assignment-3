@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtSvg import *
 import sys
+from cardsmodel import *
 
 qt_app = QApplication(sys.argv)
 
@@ -54,3 +55,8 @@ for i, j in enumerate(list):
 
 print(alist)
 
+
+hand = HandModel()
+print(hand)
+graphics_key = (hand.get_value(), hand.suit)
+print(graphics_key)

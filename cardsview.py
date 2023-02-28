@@ -2,14 +2,17 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
+from cardlib import *
 
 from cardsmodel import CardsModel
+
 
 # NOTE: This is just given as an example of how to use CardsView.
 # It is expected that you will need to adjust things to make a game out of it. 
 
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
+
     def __init__(self):
         super().__init__()
         self.tile = QPixmap('cards/table.png')
@@ -18,6 +21,7 @@ class TableScene(QGraphicsScene):
 
 class CardItem(QGraphicsSvgItem):
     """ A simple overloaded QGraphicsSvgItem that also stores the card position """
+
     def __init__(self, renderer, position):
         super().__init__()
         self.setSharedRenderer(renderer)
@@ -74,7 +78,7 @@ class CardsView(QGraphicsView):
         self.scene.clear()
         for i, card in enumerate(self.model):
             # The ID of the card in the dictionary of images is a tuple with (value, suit), both integers
-            graphics_key = (card.get_value(), card.suit)
+            graphics_key = (card.get_value(), card.suit.value)
             renderer = self.back_card if self.model.flipped() else self.all_cards[graphics_key]
             c = CardItem(renderer, i)
 
@@ -94,12 +98,12 @@ class CardsView(QGraphicsView):
         self.update_view()
 
     def update_view(self):
-        scale = (self.viewport().height()-2*self.padding)/313
+        scale = (self.viewport().height() - 2 * self.padding) / 313
         self.resetTransform()
         self.scale(scale, scale)
         # Put the scene bounding box
-        self.setSceneRect(-self.padding//scale, -self.padding//scale,
-                          self.viewport().width()//scale, self.viewport().height()//scale)
+        self.setSceneRect(-self.padding // scale, -self.padding // scale,
+                          self.viewport().width() // scale, self.viewport().height() // scale)
 
     def resizeEvent(self, painter):
         # This method is called when the window is resized.
@@ -129,9 +133,11 @@ class CardsView(QGraphicsView):
 
 # Lets test it out
 import sys
-from cardsmodel import HandModel
+
+
 
 # Creating a small demo window to work with, and put the card_view inside:
+"""
 class TestWindow(QWidget):
     def __init__(self, hand):
         super().__init__()
@@ -143,10 +149,16 @@ class TestWindow(QWidget):
         box.addWidget(button)
         self.setLayout(box)
 
-qt_app = QApplication.instance()
-hand = HandModel()
+
+cards = Hand()
+cards.add_card(KingCard(Suit.Spades))
+cards.add_card(NumberedCard(7, Suit.Spades))
+
+
+qt_app = QApplication(sys.argv)
+hand = HandModel(cards.cards)
+print(hand)
 player_view = TestWindow(hand)
 player_view.show()
 qt_app.exec_()
-
-app.exec_()
+"""

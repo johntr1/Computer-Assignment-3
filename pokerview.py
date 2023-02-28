@@ -1,6 +1,9 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from cardsview import CardsView
+from cardlib import *
+from cardsmodel import HandModel
 import sys
 
 
@@ -36,9 +39,11 @@ class PokerButtons(QGroupBox):
 
 
 class PokerBoardView(QWidget):
-    def __init__(self, poker):
+    def __init__(self, table_cards):
         super().__init__()
-        layout = QGridLayout()
+        layout = QHBoxLayout()
+        for i, card in enumerate(table_cards):
+            layout.addWidget(Cardsview(card, card_spacing=50))
         self.setLayout(layout)
 
 
@@ -47,12 +52,12 @@ class PokerView(QWidget):
         super().__init__()
         layout = QGridLayout()
 
-        layout.addWidget(PlayerView(player), 2, 3, 1, 2)
-        layout.addWidget(PokerButtons(),0,1)
-
+        layout.addWidget(PlayerView(player), 2, 1)
+        layout.addWidget(PokerBoardView(cards))
+        layout.addWidget(PokerButtons(), 0, 1)
+        layout.addWidget(PokerBoardView(), 2,2)
         phbox = QHBoxLayout()
         phbox.addWidget(PokerButtons())
-
         self.setLayout(layout)
 
 
@@ -61,9 +66,9 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.app = app
         self.setWindowTitle("CA3 Group 19")
-        status = QStatusBar()
-        status.addWidget(PlayerView(player))
-        self.setStatusBar(status)
+        self.setFixedHeight(1000)
+        self.setFixedWidth(1000)
+        self.setCentralWidget(PokerView())
 
         # Menu Bars
         menu_bar = self.menuBar()
@@ -73,6 +78,7 @@ class MainWindow(QMainWindow):
         toolbar = QToolBar("Poker Actions")
         toolbar.setIconSize(QSize(16,16))
         self.addToolBar(toolbar)
+
 
 
 player = "John"
@@ -91,8 +97,11 @@ class PokerView(QWidget):
     '
 app.exec_()
 """
+#deck = StandardDeck()
+#hand = [NumberedCard(1, Suit.Hearts), KingCard(Suit.Spades)]
+cards = [NumberedCard(2, Suit.Spades), KingCard(Suit.Spades)]
 
 app = QApplication(sys.argv)
-window = PokerView()
+window = MainWindow(app)
 window.show()
 app.exec_()
