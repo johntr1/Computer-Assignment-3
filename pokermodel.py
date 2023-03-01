@@ -35,6 +35,8 @@ class Player(QObject):
         if self.money < 0:
             print('No money')#ha ett stop här eller någon annanstans
 
+    def poker_hand_value(self, community_cards):
+       return self.hand.best_poker_hand(community_cards)
 
 class TexasHoldEm:
     def __init__(self):
@@ -107,25 +109,44 @@ class TexasHoldEm:
     def pre_flop(self):
         self.betting_round()
 
-
-
     def flop(self):
         community_cards = []
         for i in range(3):
             community_cards.append(self.deck.draw)
         #Show 3 community_cards
         self.betting_round()
+        return community_cards
 
-    def Turn(self,community_cards):
+    def turn(self,community_cards):
 
         #show 1 community_card
         self.betting_round()
+        return community_cards
 
-    def River(self):
+    def river(self, community_cards):
         #show 1 community_card
         self.betting_round()
+        return community_cards
 
-    def Showdown(self):
+    def showdown(self, community_cards):
+        best_poker_hands_list = []
+
+        for index in self.active_players:
+            if index == 1:
+                best_poker_hands_list.append(self.players[index].poker_hand_value(community_cards))
+            else:
+                best_poker_hands_list.append(0)
+
+        best_hand_index = best_poker_hands_list.index(max(best_poker_hands_list))
+        #besthand = [i for i, x in enumerate(best_poker_hands_list) if x == max(a)]
+
+        for i in len(self.active_players):
+            self.active_players[i] = 0
+        self.active_players[best_hand_index] = 1
+
+
+
+
 
 
 
@@ -210,6 +231,9 @@ class TexasHoldEm:
 
 
     def pot_winner(self):
+        if not self.check_play():
+            #check how is the winner
+
 
     def game_winner(self):
 
