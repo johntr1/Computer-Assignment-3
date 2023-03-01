@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 
 
 
-class Player(QObject):
+class Player():
 
     def __init__(self, name):
         self.name = name
@@ -64,6 +64,10 @@ class TexasHoldEm:
 
             self.hand_out_cards()
 
+            self.big_and_little_blind()
+
+            self.pre_flop()
+
 
 
 
@@ -120,11 +124,15 @@ class TexasHoldEm:
     def turn(self,community_cards):
 
         #show 1 community_card
+        community_cards.append(self.deck.draw)
+        print(community_cards)
         self.betting_round()
         return community_cards
 
     def river(self, community_cards):
         #show 1 community_card
+        community_cards.append(self.deck.draw)
+        print(community_cards)
         self.betting_round()
         return community_cards
 
@@ -164,6 +172,10 @@ class TexasHoldEm:
             chosen = self.choose(self.players[player_turn])
             player_turn = player_turn + 1
 
+            if chosen == 'fold':
+                if not self.check_play():
+                    return False
+
             if chosen == "raise":
                 raiser = player_turn
 
@@ -188,15 +200,19 @@ class TexasHoldEm:
             return True
 
     def choose(self, player):
-        print('What do you want to do?')
-        #the input
-        if input == call:
-            self.call(player)
-        elif input == poker_rasie:
-            self.poker_raise(player)
-            return  "raise"
-        elif input == fold:
-            self.fold(player)
+        print(f'What do you want to do? {player.name} You have ${player.money}')
+        while True:
+            inp = input('What do you want ')
+            if inp == 'call':
+                self.call(player)
+                return None
+            elif inp == 'rasie':
+                self.poker_raise(player)
+                return  "raise"
+            elif inp == 'fold':
+                self.fold(player)
+                return 'fold'
+
 
 
     def call(self, player):
@@ -212,10 +228,12 @@ class TexasHoldEm:
 
     def poker_raise(self, player):
         #ask with the GUI how much should raise
-        if not type(amount) == int:
+        while True:
+            amount = input('How much do you want to raise with?')
+            if type(amount) == int and amount <= player.money:
+                break
             #GUI with an error saying to type in a whole number
-        if amount > player.money:
-            print('not enough money') # with an GUI
+            print('not enough money or not an int') # with an GUI
 
         self.pot = self.pot + amount
         player.change_in_pot(amount)
@@ -225,6 +243,7 @@ class TexasHoldEm:
     def fold(self, player):
 
         self.remove_active_player(player)
+        return 'fold'
 
     def remove_active_player(self, player):
         self.active_players[self.players.index(player)] = 0
@@ -232,7 +251,8 @@ class TexasHoldEm:
 
     def pot_winner(self):
         if not self.check_play():
-            #check how is the winner
+
+            #check who is the winner
 
 
     def game_winner(self):
