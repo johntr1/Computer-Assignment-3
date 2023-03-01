@@ -21,7 +21,7 @@ class PlayerView(QGroupBox):
         layout = QVBoxLayout()
         player_turn = QLabel()
         player_turn.setText(f"{self.player}s tur")
-        layout.addWidget(player_turn)
+#        layout.addWidget(player_turn)
 
         card_layout = QHBoxLayout()
         layout.addWidget(CardsView(cards, card_spacing=50))
