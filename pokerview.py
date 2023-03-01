@@ -24,12 +24,11 @@ class PlayerView(QGroupBox):
         layout.addWidget(player_turn)
 
         card_layout = QHBoxLayout()
-        hand = HandModel(cards.cards)
         layout.addWidget(CardsView(hand, card_spacing=50))
         self.setLayout(layout)
 
 
-class PokerButtons(QGroupBox):
+class PokerButtons(QWidget):
     def __init__(self, cards):
         super().__init__()
 
@@ -40,7 +39,6 @@ class PokerButtons(QGroupBox):
         layout.addWidget(QPushButton('Fold'))
         fold_button = QPushButton('Flip')
         layout.addWidget(fold_button)
-        hand = HandModel(cards.cards)
         fold_button.clicked.connect(hand.flip)
         self.setLayout(layout)
 
@@ -49,7 +47,6 @@ class PokerBoardView(QWidget):
     def __init__(self, table_cards):
         super().__init__()
         layout = QHBoxLayout()
-        hand = HandModel(table_cards.cards)
         layout.addWidget(CardsView(hand, card_spacing=250))
         self.setLayout(layout)
 
@@ -59,9 +56,9 @@ class PokerView(QWidget):
         super().__init__()
         layout = QGridLayout()
 
-        layout.addWidget(PlayerView(player, hand), 3, 1)
-        layout.addWidget(PokerButtons(cards), 3, 0)
-        layout.addWidget(PokerBoardView(cards), 0, 0, 2, 4)
+        layout.addWidget(PlayerView(player, hand2), 3, 1)
+        layout.addWidget(PokerButtons(hand2), 3, 0)
+        layout.addWidget(PokerBoardView(hand), 0, 0, 2, 4)
         self.setLayout(layout)
 
 
@@ -111,13 +108,14 @@ hand.add_card(NumberedCard(2, Suit.Spades))
 hand.add_card(KingCard(Suit.Spades))
 hand.add_card(KingCard(Suit.Spades))
 # hand.add_card(NumberedCard(2, Suit.Spades))
-cards = hand
+
+hand = HandModel(hand.cards)
 
 hand2 = Hand()
 
 hand2.add_card(NumberedCard(2, Suit.Spades))
 hand2.add_card(KingCard(Suit.Spades))
-hand = hand2
+hand2 = HandModel(hand2.cards)
 
 app = QApplication(sys.argv)
 window = MainWindow(app)

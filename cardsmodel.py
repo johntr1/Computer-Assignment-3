@@ -55,6 +55,7 @@ class Hand:
         self.cards.append(card)
 """
 
+
 # We can extend this class to create a model, which updates the view whenever it has changed.
 # NOTE: You do NOT have to do it this way.
 # You might find it easier to make a Player-model, or a whole GameState-model instead.
