@@ -20,7 +20,7 @@ class PlayerView(QGroupBox):
         self.player = player  # player is player name
         layout = QVBoxLayout()
         player_turn = QLabel()
-        player_turn.setText(self.player)
+        player_turn.setText(f"{self.player}s tur")
         layout.addWidget(player_turn)
 
         card_layout = QHBoxLayout()
@@ -30,7 +30,7 @@ class PlayerView(QGroupBox):
 
 
 class PokerButtons(QGroupBox):
-    def __init__(self):
+    def __init__(self, cards):
         super().__init__()
 
         button = QPushButton('Check')
@@ -38,6 +38,10 @@ class PokerButtons(QGroupBox):
         layout.addWidget(button)
         layout.addWidget(QPushButton('Bet'))
         layout.addWidget(QPushButton('Fold'))
+        fold_button = QPushButton('Flip')
+        layout.addWidget(fold_button)
+        hand = HandModel(cards.cards)
+        fold_button.clicked.connect(hand.flip)
         self.setLayout(layout)
 
 
@@ -56,7 +60,7 @@ class PokerView(QWidget):
         layout = QGridLayout()
 
         layout.addWidget(PlayerView(player, hand), 3, 1)
-        layout.addWidget(PokerButtons(), 3, 0)
+        layout.addWidget(PokerButtons(cards), 3, 0)
         layout.addWidget(PokerBoardView(cards), 0, 0, 2, 4)
         self.setLayout(layout)
 
