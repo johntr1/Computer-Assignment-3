@@ -18,6 +18,8 @@ class Player():
         self.hand = Hand()
         return self.hand
 
+    def get_name(self):
+        return self.name
     def player_pot(self):
         return self.player_pot
 
@@ -250,9 +252,11 @@ class TexasHoldEm:
 
 
     def pot_winner(self):
-        if not self.check_play():
+        winner_index = self.active_players.index(1)
+        print(f'the winner of the pot is {self.players[winner_index].name}')
+        return winner_index
 
-            #check who is the winner
+         #check who is the winner
 
 
     def game_winner(self):
