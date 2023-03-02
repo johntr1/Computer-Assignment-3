@@ -208,7 +208,7 @@ class TexasHoldEm:
             if inp == 'call':
                 self.call(player)
                 return None
-            elif inp == 'rasie':
+            elif inp == 'raise':
                 self.poker_raise(player)
                 return  "raise"
             elif inp == 'fold':
