@@ -46,7 +46,7 @@ class TexasHoldEm:
         self.players = []
         self.active_players = []
         self.pot = 0
-        self.deck = 0
+        self.deck = None
         self.big_blind_player = 0
         #start the gui and for players and names
         #put the 2 players in the self.players list
@@ -98,9 +98,9 @@ class TexasHoldEm:
 
     def hand_out_cards(self):
 
-        self.deck = StandardDeck
+        self.deck = StandardDeck()
         self.deck = self.deck.shuffle()
-        print(self.deck)
+
         #reset in_pot to 0 for all players
         for i, player in enumerate(self.players):
             if self.active_players[i] == 0: # Only gives cards to active players
