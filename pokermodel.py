@@ -6,6 +6,10 @@ from PyQt5.QtWidgets import *
 
 
 
+#vad händer om en person raisear mer än vad du har
+#rasieing problemet med
+
+
 class Player():
     def __init__(self, name):
         self.name = name
@@ -45,6 +49,7 @@ class TexasHoldEm:
     def __init__(self):
         self.players = []
         self.active_players = []
+        self.player_turn = 0
         self.pot = 0
         self.deck = 0
         self.big_blind_player = 0
@@ -94,11 +99,12 @@ class TexasHoldEm:
 
             self.pot_winner()
 
-            self.big_blind_player = 1 + self.big_blind_player
+            self.big_blind_player = (1 + self.big_blind_player) % len(self.players)
 
     def hand_out_cards(self):
 
         self.deck = StandardDeck
+        print(self.deck)
         self.deck = self.deck.shuffle()
         print(self.deck)
         #reset in_pot to 0 for all players
