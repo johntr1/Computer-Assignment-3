@@ -22,7 +22,7 @@ class PlayerView(QGroupBox):
         layout = QVBoxLayout()
         player_turn = QLabel()
         player_turn.setText(f"{self.player}s tur")
-        #        layout.addWidget(player_turn)
+        layout.addWidget(player_turn)
 
         card_layout = QHBoxLayout()
         layout.addWidget(CardsView(cards, card_spacing=50))
@@ -57,6 +57,7 @@ class PokerButtons(QWidget):
         if ok:
             self.game.poker_raise(number)
 
+
 class PokerBoardView(QWidget):
     def __init__(self, table_cards):
         super().__init__()
@@ -78,6 +79,7 @@ class InformationBox(QWidget):
 class PokerView(QWidget):
     def __init__(self, game):
         super().__init__()
+        self.game = game
 
         layout = QGridLayout()
 
@@ -85,6 +87,15 @@ class PokerView(QWidget):
         layout.addWidget(PokerButtons(cards2, game), 3, 0)
         layout.addWidget(PokerBoardView(cards), 0, 0, 2, 4)
         self.setLayout(layout)
+
+        self.game.warning.connect(self.alert_warning)
+
+    def alert_warning(self, text: str):
+        msg = QMessageBox()
+        msg.setText(text)
+        msg.exec()
+
+
 
 
 class MainWindow(QMainWindow):
