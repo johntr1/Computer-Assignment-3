@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from cardsview import CardsView
 from cardlib import *
 from cardsmodel import HandModel
+from pokermodel import *
 import sys
 
 
@@ -29,27 +30,32 @@ class PlayerView(QGroupBox):
 
 
 class PokerButtons(QWidget):
-    def __init__(self, cards):
+    def __init__(self, cards, game):
         super().__init__()
-
+        self.game = game
         layout = QVBoxLayout()
+
         raise_button = QPushButton("Raise")
         raise_button.clicked.connect(self.get_input)
         layout.addWidget(raise_button)
 
-        layout.addWidget(QPushButton('Call'))
-        layout.addWidget(QPushButton('Fold'))
-        fold_button = QPushButton('Flip')
+        call_button = QPushButton("Call")
+        call_button.clicked.connect(self.game.call)
+        layout.addWidget(call_button)
+
+        fold_button = QPushButton("Fold")
+        fold_button.clicked.connect(self.game.fold)
         layout.addWidget(fold_button)
-        fold_button.clicked.connect(cards.flip)
+
+        flip_button = QPushButton('Flip')
+        layout.addWidget(flip_button)
+        flip_button.clicked.connect(cards.flip)
         self.setLayout(layout)
 
     def get_input(self):
         number, ok = QInputDialog.getInt(self, "Raise", "Enter a number")
         if ok:
-            game.next_turn()
-            return True
-
+            self.game.poker_raise(number)
 
 class PokerBoardView(QWidget):
     def __init__(self, table_cards):
@@ -57,6 +63,7 @@ class PokerBoardView(QWidget):
         layout = QHBoxLayout()
         layout.addWidget(CardsView(table_cards, card_spacing=250))
         self.setLayout(layout)
+
 
 class InformationBox(QWidget):
     def __init__(self, game):
@@ -69,25 +76,25 @@ class InformationBox(QWidget):
 
 
 class PokerView(QWidget):
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
 
         layout = QGridLayout()
 
         layout.addWidget(PlayerView(player, cards2), 3, 1)
-        layout.addWidget(PokerButtons(cards2), 3, 0)
+        layout.addWidget(PokerButtons(cards2, game), 3, 0)
         layout.addWidget(PokerBoardView(cards), 0, 0, 2, 4)
         self.setLayout(layout)
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, app):
+    def __init__(self, app, game):
         super().__init__()
         self.app = app
         self.setWindowTitle("CA3 Group 19")
         self.setFixedHeight(700)
         self.setFixedWidth(850)
-        self.setCentralWidget(PokerView())
+        self.setCentralWidget(PokerView(game))
         player_turn = QLabel("Johns tur")
         player_money = QLabel("")
         status = QStatusBar()
@@ -138,6 +145,9 @@ hand2.add_card(KingCard(Suit.Spades))
 cards2 = HandModel(hand2.cards)
 
 app = QApplication(sys.argv)
-window = MainWindow(app)
+
+game = TexasHoldEm()
+
+window = MainWindow(app, game)
 window.show()
 app.exec_()
