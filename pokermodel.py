@@ -41,7 +41,7 @@ class Player():
             print('No money')  # ha ett stop här eller någon annanstans
 
     def poker_hand_value(self, community_cards):
-        return self.hand.best_poker_hand(community_cards)
+        return self.hand.best_poker_hand(community_cards.cards)
 
 
 class TexasHoldEm:
@@ -118,8 +118,8 @@ class TexasHoldEm:
     def big_and_little_blind(self):
 
         for i in range(len(self.active_players)):  # checks if the big blind player is active
-            if self.active_players[self.big_blind_player + i] == 1:
-                self.big_blind_player = self.big_blind_player + i
+            if self.active_players[(self.big_blind_player + i) % len(self.active_players)] == 1:
+                self.big_blind_player = (self.big_blind_player + i) % len(self.active_players)
                 break
 
         # big blind
@@ -131,8 +131,8 @@ class TexasHoldEm:
         # small blind
         amount = 50
         self.pot = self.pot + amount
-        self.players[self.big_blind_player - 1].change_player_pot(amount)
-        self.players[self.big_blind_player - 1].change_money(-amount)
+        self.players[(self.big_blind_player - 1) % len(self.active_players)].change_player_pot(amount)
+        self.players[(self.big_blind_player - 1) % len(self.active_players)].change_money(-amount)
 
     def pre_flop(self):
         if not self.betting_round():
@@ -140,11 +140,11 @@ class TexasHoldEm:
         return True
 
     def flop(self):
-        community_cards = []
+        community_cards = Hand()
         for i in range(3):
-            community_cards.append(self.deck.draw)
+            community_cards.add_card(self.deck.draw())
         # Show 3 community_cards
-        print(community_cards)
+        print(community_cards.cards)
         if not self.betting_round():
             return False
         return community_cards
@@ -152,16 +152,16 @@ class TexasHoldEm:
     def turn(self, community_cards):
 
         # show 1 community_card
-        community_cards.append(self.deck.draw)
-        print(community_cards)
+        community_cards.add_card(self.deck.draw())
+        print(community_cards.cards)
         if not self.betting_round():
             return False
         return community_cards
 
     def river(self, community_cards):
         # show 1 community_card
-        community_cards.append(self.deck.draw)
-        print(community_cards)
+        community_cards.add_card(self.deck.draw())
+        print(community_cards.cards)
         self.betting_round()
         if not self.betting_round():
             return False

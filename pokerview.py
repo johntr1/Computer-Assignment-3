@@ -58,6 +58,15 @@ class PokerBoardView(QWidget):
         layout.addWidget(CardsView(table_cards, card_spacing=250))
         self.setLayout(layout)
 
+class InformationBox(QWidget):
+    def __init__(self, game):
+        super().__init__()
+        layout = QVBoxLayout()
+        # Lägg till layouts:
+        # Motståndarens pengar
+        # Hur mycket är i potten
+        # Vad motståndaren har ökat med
+
 
 class PokerView(QWidget):
     def __init__(self):
