@@ -61,3 +61,7 @@ print(hand)
 graphics_key = (hand.get_value(), hand.suit)
 print(graphics_key)
 
+
+
+#self.player_turn
+
