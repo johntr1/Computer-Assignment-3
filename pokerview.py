@@ -21,7 +21,7 @@ class PlayerView(QGroupBox):
         layout = QVBoxLayout()
         player_turn = QLabel()
         player_turn.setText(f"{self.player}s tur")
-#        layout.addWidget(player_turn)
+        #        layout.addWidget(player_turn)
 
         card_layout = QHBoxLayout()
         layout.addWidget(CardsView(cards, card_spacing=50))
@@ -32,15 +32,23 @@ class PokerButtons(QWidget):
     def __init__(self, cards):
         super().__init__()
 
-        button = QPushButton('Check')
         layout = QVBoxLayout()
-        layout.addWidget(button)
-        layout.addWidget(QPushButton('Bet'))
+        raise_button = QPushButton("Raise")
+        raise_button.clicked.connect(self.get_input)
+        layout.addWidget(raise_button)
+
+        layout.addWidget(QPushButton('Call'))
         layout.addWidget(QPushButton('Fold'))
         fold_button = QPushButton('Flip')
         layout.addWidget(fold_button)
         fold_button.clicked.connect(cards.flip)
         self.setLayout(layout)
+
+    def get_input(self):
+        number, ok = QInputDialog.getInt(self, "Raise", "Enter a number")
+        if ok:
+            game.next_turn()
+            return True
 
 
 class PokerBoardView(QWidget):
@@ -54,6 +62,7 @@ class PokerBoardView(QWidget):
 class PokerView(QWidget):
     def __init__(self):
         super().__init__()
+
         layout = QGridLayout()
 
         layout.addWidget(PlayerView(player, cards2), 3, 1)
@@ -71,8 +80,10 @@ class MainWindow(QMainWindow):
         self.setFixedWidth(850)
         self.setCentralWidget(PokerView())
         player_turn = QLabel("Johns tur")
+        player_money = QLabel("")
         status = QStatusBar()
         status.addWidget(player_turn)
+        status.addWidget(player_money)
         self.setStatusBar(status)
         # Menu Bars
         menu_bar = self.menuBar()
