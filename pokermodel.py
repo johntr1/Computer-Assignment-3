@@ -8,6 +8,11 @@ from PyQt5.QtWidgets import *
 # vad händer om en person raisear mer än vad du har
 # rasieing problemet med
 
+# Community_Card Changes
+# Player Turn
+# Player Winner
+# Game Winner
+
 
 class Player():
     def __init__(self, name):
@@ -62,61 +67,26 @@ class TexasHoldEm:
 
         self.players.append(Player('John'))
         self.players.append(Player('Martin'))
+        for i in range(len(self.players)):
+            self.active_players.append(1)
         self.hand_out_cards()
 
-        while True:  # While 2 people have money
-            for player in self.players:
-                player.reset_player_pot()
-
-            for i in range(len(self.players)):  # Resets the active players
-                self.active_players.append(1)
-
-            for i, j in enumerate(self.players):  # If the player has no money she/he is not an active player
-                if j.check_money() == 0:
-                    self.active_players[i] = 0
-
-            self.hand_out_cards()
-
-            self.big_and_little_blind()
-
-            if False == self.pre_flop():
-                self.game_winner()
-                continue
-
-            community_cards = self.flop()
-            if community_cards == False:
-                self.game_winner()
-                continue
-
-            community_cards = self.turn(community_cards)
-
-            if community_cards == False:
-                self.game_winner()
-                continue
-
-            self.river(community_cards)
-            if community_cards == False:
-                self.game_winner()
-                continue
-
-            self.showdown(community_cards)
-
-            self.pot_winner()
-
-            self.big_blind_player = (1 + self.big_blind_player) % len(self.players)
-
     def reset_pot(self):
+        print(f'{self.players[0].check_money()} has money')
+        print(f'{self.players[1].check_money()} has money')
         if not self.check_game():
+            print('game winner')
             self.game_winner()
+
         for player in self.players:
             player.reset_player_pot()
 
+        self.big_blind_player = (self.big_blind_player + 1) % len(self.players)
         self.pot = 0
 
         self.hand_out_cards()
 
     def hand_out_cards(self):
-
         self.deck = StandardDeck()
         self.deck.shuffle()
         # reset in_pot to 0 for all players
@@ -128,7 +98,6 @@ class TexasHoldEm:
                 hand.add_card(self.deck.draw())
 
     def big_and_little_blind(self):
-
         for i in range(len(self.active_players)):  # checks if the big blind player is active
             if self.active_players[(self.big_blind_player + i) % len(self.active_players)] == 1:
                 self.big_blind_player = (self.big_blind_player + i) % len(self.active_players)
@@ -146,23 +115,10 @@ class TexasHoldEm:
         self.players[(self.big_blind_player - 1) % len(self.active_players)].change_player_pot(amount)
         self.players[(self.big_blind_player - 1) % len(self.active_players)].change_money(-amount)
 
-    def pre_flop(self):
-        self.player_turn = (self.big_blind_player + 1) % len(self.active_players)
-        self.raiser = self.player_turn
-        while True:
-
-            if self.raiser == self.player_turn:
-                break
-
-        if not self.betting_round():
-            return False
-        return True
-
     def check_round(self):
         if self.call_counter > len(self.players):
             self.round_counter += 1
-            round()
-
+            self.round()
 
     def round(self):
         if self.round_counter == 1:
@@ -173,79 +129,28 @@ class TexasHoldEm:
             self.community_cards.add_card(self.deck.draw())
         elif self.round_counter == 3:
             self.community_cards.add_card(self.deck.draw())
+            print(self.community_cards.cards)
         elif self.round_counter == 4:
             self.showdown()
         else:
             print('error')
 
-    def flop(self):
-        community_cards = Hand()
-        for i in range(3):
-            community_cards.add_card(self.deck.draw())
-        # Show 3 community_cards
-        print(community_cards.cards)
-        if not self.betting_round():
-            return False
-        return community_cards
-
-    def turn(self, community_cards):
-
-        # show 1 community_card
-        community_cards.add_card(self.deck.draw())
-        print(community_cards.cards)
-        if not self.betting_round():
-            return False
-        return community_cards
-
-    def river(self, community_cards):
-        # show 1 community_card
-        community_cards.add_card(self.deck.draw())
-        print(community_cards.cards)
-        self.betting_round()
-        if not self.betting_round():
-            return False
-        return community_cards
-
-    def showdown(self, community_cards):
+    def showdown(self):
         best_poker_hands_list = []
 
-        for index in self.active_players:
-            if index == 1:
-                best_poker_hands_list.append(self.players[index].poker_hand_value(community_cards))
-            else:
-                best_poker_hands_list.append(0)
+        for player in self.players:
+            best_poker_hands_list.append(player.poker_hand_value(self.community_cards))
+        for i in range(2):
+            print(self.players[i].hand.cards[0])
+            print(self.players[i].hand.cards[1])
 
         best_hand_index = best_poker_hands_list.index(max(best_poker_hands_list))
-        # besthand = [i for i, x in enumerate(best_poker_hands_list) if x == max(a)]
+        print(best_hand_index)
 
         for i in range(len(self.active_players)):
             self.active_players[i] = 0
         self.active_players[best_hand_index] = 1
-
-    def betting_round(self):
-        player_turn = (self.big_blind_player + 1) % len(self.active_players)
-        raiser = player_turn
-
-        while True:
-
-            for i in range(len(self.active_players)):  # checks if the turn_player is an active player
-                if self.active_players[(player_turn + 1) % len(self.active_players)] == 1:
-                    player_turn = (player_turn + i) % len(self.active_players)
-                    break
-
-            chosen = self.choose(self.players[player_turn])
-            player_turn = player_turn + 1
-
-            if chosen == 'fold':
-                if not self.check_play():
-                    return False
-
-            if chosen == "raise":
-                raiser = player_turn
-
-            if raiser == player_turn:
-                break
-        return True
+        self.pot_winner()
 
     def check_play(self):
         if sum(self.active_players) <= 1:
@@ -255,6 +160,7 @@ class TexasHoldEm:
 
     def check_game(self):
         list = []
+
         for player in self.players:  # checks if more than one person has money
             if not player.check_money() == 0:
                 list.append(1)
@@ -263,52 +169,44 @@ class TexasHoldEm:
         else:
             return True
 
-    def choose(self, player):
-        print(f'What do you want to do? {player.name} You have ${player.money}')
-        while True:
-            inp = input('What do you want ')
-            if inp == 'call':
-                self.call(player)
-                return None
-            elif inp == 'raise':
-                self.poker_raise(player)
-                return "raise"
-            elif inp == 'fold':
-                self.fold(player)
-                return 'fold'
-
     def call(self):
         index = (self.player_turn - 1) % len(self.active_players)
-        if self.players[index].get_player_pot() > self.player_turn.get_player_pot():  # if the player before has more in the pot
-            diff = self.players[index].get_player_pot() - self.player_turn.get_player_pot()
+        if self.players[index].get_player_pot() > self.players[self.player_turn].get_player_pot():  # if the player before has more in the pot
+            diff = self.players[index].get_player_pot() - self.players[self.player_turn].get_player_pot()
             self.pot = self.pot + diff
-            self.player_turn.change_player_pot(diff)
-            self.player_turn.change_money(-diff)
+            self.players[self.player_turn].change_player_pot(diff)
+            self.players[self.player_turn].change_money(-diff)
 
-            self.call_counter += 1
+        self.call_counter += 1
+        self.next_turn()
         print(f'{self.players[self.player_turn].get_name()} has called.')
         self.check_round()
 
-
-
     def poker_raise(self, amount):
 
-        self.pot = self.pot + amount
-        self.player_turn.change_player_pot(amount)
-        self.player_turn.change_money(-amount)
-        self.raiser = self.player_turn
+        if amount > self.players[self.player_turn].check_money() and amount <= 0:
+            self.warning.emit('Not a valid raise')
+        else:
+            self.pot = self.pot + amount
+            self.players[self.player_turn].change_player_pot(amount)
+            self.players[self.player_turn].change_money(-amount)
+            self.raiser = self.player_turn
 
-        self.call_counter = 0
+            self.call_counter = 0
+            self.next_turn()
+            print(f'{self.players[self.player_turn].get_name()} has raised with ${amount}.')
 
-        print(f'{self.players[self.player_turn].get_name()} has raised with ${amount}.')
+    def fold(self):
 
-    def fold(self, player):
-
-        self.remove_active_player(player)
+        self.remove_active_player()
+        print(f'{self.players[self.player_turn].name} has folded.')
         self.pot_winner()
 
-    def remove_active_player(self, player):
-        self.active_players[self.players.index(player)] = 0
+    def next_turn(self):
+        self.player_turn = (self.player_turn + 1) % len(self.active_players)
+
+    def remove_active_player(self):
+        self.active_players[self.player_turn] = 0
 
     def pot_winner(self):
 
@@ -320,6 +218,7 @@ class TexasHoldEm:
             player_winner.change_money(self.pot)
 
         print(f'the winner of the pot is {self.players[winner_index].name}')
+        self.reset_pot()
 
     def game_winner(self):
 
@@ -329,4 +228,12 @@ class TexasHoldEm:
                 return i
 
 
-TexasHoldEm()
+
+t = TexasHoldEm()
+
+#for i in range(2):
+t.poker_raise(9950)
+t.poker_raise(9900)
+
+for i in range(6):
+    t.call()
