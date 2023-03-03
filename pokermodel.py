@@ -185,9 +185,9 @@ class TexasHoldEm(QObject):
             self.players[self.player_turn].change_player_pot(diff)
             self.players[self.player_turn].change_money(-diff)
 
+        print(f'{self.players[self.player_turn].get_name()} has called.')
         self.call_counter += 1
         self.next_turn()
-        print(f'{self.players[self.player_turn].get_name()} has called.')
         self.check_round()
 
     def poker_raise(self, amount):
