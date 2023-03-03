@@ -37,7 +37,7 @@ class Player():
 
     def change_money(self, amount):
         self.money = self.money + amount
-        if self.money <= 0:
+        if self.money < 0:
             print('No money')  # ha ett stop här eller någon annanstans
 
     def poker_hand_value(self, community_cards):
@@ -52,13 +52,17 @@ class TexasHoldEm:
         self.big_blind_player = 0
         self.raiser = 0
         self.pot = 0
-        self.deck = []
+        self.deck =[]
         self.community_cards = Hand()
         self.round_counter = 0
-        self.call_counter = 0
 
         # start the gui and for players and names
         # put the 2 players in the self.players list
+
+        self.hand_out_cards()
+
+
+
 
         self.players.append(Player('John'))
         self.players.append(Player('Martin'))
@@ -105,16 +109,6 @@ class TexasHoldEm:
 
             self.big_blind_player = (1 + self.big_blind_player) % len(self.players)
 
-    def reset_pot(self):
-        if not self.check_game():
-            self.game_winner()
-        for player in self.players:
-            player.reset_player_pot()
-
-        self.pot = 0
-
-        self.hand_out_cards()
-
     def hand_out_cards(self):
 
         self.deck = StandardDeck()
@@ -159,12 +153,6 @@ class TexasHoldEm:
         return True
 
     def check_round(self):
-        if self.call_counter > len(self.players):
-            self.round_counter += 1
-            round()
-
-
-    def round(self):
         if self.round_counter == 1:
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
@@ -196,6 +184,7 @@ class TexasHoldEm:
         if not self.betting_round():
             return False
         return community_cards
+
 
     def river(self, community_cards):
         # show 1 community_card
@@ -254,6 +243,7 @@ class TexasHoldEm:
             return True
 
     def check_game(self):
+
         list = []
         for player in self.players:  # checks if more than one person has money
             if not player.check_money() == 0:
@@ -285,27 +275,29 @@ class TexasHoldEm:
             self.player_turn.change_player_pot(diff)
             self.player_turn.change_money(-diff)
 
-            self.call_counter += 1
+            checc
         print(f'{self.players[self.player_turn].get_name()} has called.')
-        self.check_round()
-
-
 
     def poker_raise(self, amount):
+        # ask with the GUI how much should raise
+        while True:
+            amount = int(input('How much do you want to raise with?'))
+            if type(amount) == int and amount <= player.money:
+                break
+            # GUI with an error saying to type in a whole number
+            print('not enough money or not an int')  # with an GUI
 
         self.pot = self.pot + amount
-        self.player_turn.change_player_pot(amount)
-        self.player_turn.change_money(-amount)
+        player.change_player_pot(amount)
+        player.change_money(-amount)
         self.raiser = self.player_turn
 
-        self.call_counter = 0
-
-        print(f'{self.players[self.player_turn].get_name()} has raised with ${amount}.')
+        print(f'{self.players[self.player_turn].get_name()} has called.')
 
     def fold(self, player):
 
         self.remove_active_player(player)
-        self.pot_winner()
+        return 'fold'
 
     def remove_active_player(self, player):
         self.active_players[self.players.index(player)] = 0
@@ -313,13 +305,8 @@ class TexasHoldEm:
     def pot_winner(self):
 
         winner_index = self.active_players.index(1)
-        player_winner = self.players[winner_index]
-        if player_winner.get_player_pot() * 2 < self.pot:
-            player_winner.change_money(player_winner.get_player_pot() * 2)
-        else:
-            player_winner.change_money(self.pot)
-
         print(f'the winner of the pot is {self.players[winner_index].name}')
+        return winner_index
 
     def game_winner(self):
 
@@ -327,6 +314,8 @@ class TexasHoldEm:
             if not player.check_money() == 0:
                 print(f'The winner of the game is {player.get_name()}')
                 return i
+
+    def reset_pot(self):
 
 
 TexasHoldEm()
