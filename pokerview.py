@@ -46,8 +46,8 @@ class PokerButtons(QWidget):
 
     def get_input(self):
         number, ok = QInputDialog.getInt(self, "Raise", "Enter a number")
+
         if ok:
-            game.next_turn()
             return True
 
 
