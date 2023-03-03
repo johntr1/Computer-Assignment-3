@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import *
 # Game Winner
 
 #en call vid river avslutar ronden
+#fixa all in
 
 class Player():
     def __init__(self, name):
