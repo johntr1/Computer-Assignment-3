@@ -217,8 +217,8 @@ class TexasHoldEm(QObject):
         self.pot_winner()
 
     def next_turn(self):
-        print(f'It is {self.players[self.player_turn].get_name()} turn, you have ${self.players[self.player_turn].check_money()}')
         self.player_turn = (self.player_turn + 1) % len(self.active_players)
+        print(f'It is {self.players[self.player_turn].get_name()} turn, you have ${self.players[self.player_turn].check_money()}')
         self.update_turn.emit()
 
     def all_in(self):
