@@ -11,10 +11,10 @@ import random
 
 class Suit(Enum):
     """Enum class that sets a value to the suits"""
-    Hearts = 4
-    Spades = 3
-    Clubs = 2
-    Diamonds = 1
+    Hearts = 1
+    Spades = 2
+    Clubs = 3
+    Diamonds = 4
 
     def __str__(self):
         return self.name

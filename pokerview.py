@@ -16,16 +16,17 @@ import sys
 
 
 class PlayerView(QGroupBox):
-    def __init__(self, player, cards):
+    def __init__(self, game, cards):
         super().__init__()
-        self.player = player  # player is player name
+        self.game = game
+        #      self.player = player  # player is player name
         layout = QVBoxLayout()
-        player_turn = QLabel()
-        player_turn.setText(f"{self.player}s tur")
-        layout.addWidget(player_turn)
+        #       player_turn = QLabel()
+        #      player_turn.setText(f"{self.player}s tur")
+        #    layout.addWidget(player_turn)
 
         card_layout = QHBoxLayout()
-        layout.addWidget(CardsView(cards, card_spacing=50))
+        layout.addWidget(CardsView(HandModel(self.game.players[self.game.player_turn].hand.cards), card_spacing=50))
         self.setLayout(layout)
 
 
@@ -83,7 +84,7 @@ class PokerView(QWidget):
 
         layout = QGridLayout()
 
-        layout.addWidget(PlayerView(player, cards2), 3, 1)
+        layout.addWidget(PlayerView(game, cards2), 3, 1)
         layout.addWidget(PokerButtons(cards2, game), 3, 0)
         layout.addWidget(PokerBoardView(cards), 0, 0, 2, 4)
         self.setLayout(layout)
@@ -96,22 +97,19 @@ class PokerView(QWidget):
         msg.exec()
 
 
-
-
 class MainWindow(QMainWindow):
     def __init__(self, app, game):
         super().__init__()
+        self.game = game
         self.app = app
         self.setWindowTitle("CA3 Group 19")
         self.setFixedHeight(700)
         self.setFixedWidth(850)
         self.setCentralWidget(PokerView(game))
-        player_turn = QLabel("Johns tur")
+
         player_money = QLabel("")
         status = QStatusBar()
-        status.addWidget(player_turn)
-        status.addWidget(player_money)
-        self.setStatusBar(status)
+
         # Menu Bars
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu('&File')
@@ -121,8 +119,17 @@ class MainWindow(QMainWindow):
         toolbar.setIconSize(QSize(16, 16))
         self.addToolBar(toolbar)
 
+        # Connect signals
+        self.game.update_turn.connect(self.update_player_turn_label)
 
-player = "John"
+        self.player_turn = QLabel(f'{self.game.players[self.game.player_turn].get_name()}s tur')
+        status.addWidget(self.player_turn)
+        status.addWidget(player_money)
+        self.setStatusBar(status)
+
+    def update_player_turn_label(self):
+        self.player_turn.setText(f'{self.game.players[self.game.player_turn].get_name()}s tur')
+
 
 """
 app = QApplication(sys.argv)
@@ -140,10 +147,10 @@ app.exec_()
 """
 # deck = StandardDeck()
 hand = Hand()
-hand.add_card(NumberedCard(2, Suit.Spades))
+hand.add_card(NumberedCard(2, Suit.Hearts))
 hand.add_card(KingCard(Suit.Spades))
-hand.add_card(NumberedCard(2, Suit.Spades))
-hand.add_card(KingCard(Suit.Spades))
+hand.add_card(NumberedCard(2, Suit.Diamonds))
+hand.add_card(KingCard(Suit.Clubs))
 hand.add_card(KingCard(Suit.Spades))
 # hand.add_card(NumberedCard(2, Suit.Spades))
 
