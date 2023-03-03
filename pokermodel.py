@@ -74,6 +74,7 @@ class TexasHoldEm(QObject):
             self.active_players.append(1)
         self.hand_out_cards()
         self.big_and_little_blind()
+        self.update_turn.emit()
 
     def reset_pot(self):
         print(f'{self.players[0].check_money()} has money John')
@@ -176,8 +177,6 @@ class TexasHoldEm(QObject):
             return True
 
     def call(self):
-        print(f'{self.players[0].check_money()} has money John')
-        print(f'{self.players[1].check_money()} has money martin')
         index = (self.player_turn - 1) % len(self.active_players)
         if self.players[index].get_player_pot() > self.players[self.player_turn].get_player_pot():  # if the player before has more in the pot
             diff = self.players[index].get_player_pot() - self.players[self.player_turn].get_player_pot()
@@ -191,6 +190,9 @@ class TexasHoldEm(QObject):
         self.check_round()
 
     def poker_raise(self, amount):
+        if self.players[self.player_turn].check_money() == 0:
+            self.call()
+            return
         print(f'{self.players[self.player_turn].check_money()} has money {self.players[self.player_turn].get_name()}')
 
 
@@ -207,14 +209,21 @@ class TexasHoldEm(QObject):
             self.next_turn()
 
     def fold(self):
+        if self.players[self.player_turn].check_money() == 0:
+            self.call()
+            return
         self.remove_active_player()
         print(f'{self.players[self.player_turn].name} has folded.')
         self.pot_winner()
 
     def next_turn(self):
+        print(f'It is {self.players[self.player_turn].get_name()} turn, you have ${self.players[self.player_turn].check_money()}')
         self.player_turn = (self.player_turn + 1) % len(self.active_players)
         self.update_turn.emit()
 
+    def all_in(self):
+        if self.round_counter == 0:
+            print('the')
 
     def remove_active_player(self):
         self.active_players[self.player_turn] = 0
