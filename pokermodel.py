@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import *
 # Player Winner
 # Game Winner
 
+#en call vid river avslutar ronden
 
 class Player():
     def __init__(self, name):
