@@ -49,9 +49,11 @@ class TexasHoldEm:
         self.players = []
         self.active_players = []
         self.player_turn = 0
+        self.raiser = 0
         self.pot = 0
         self.deck = 0
         self.big_blind_player = 0
+
 
         # start the gui and for players and names
         # put the 2 players in the self.players list
@@ -60,7 +62,6 @@ class TexasHoldEm:
         self.players.append(Player('Martin'))
 
         while True:  # While 2 people have money
-
             for player in self.players:
                 player.reset_player_pot()
 
@@ -74,6 +75,8 @@ class TexasHoldEm:
             self.hand_out_cards()
 
             self.big_and_little_blind()
+
+
 
             if False == self.pre_flop():
                 self.game_winner()
@@ -135,6 +138,15 @@ class TexasHoldEm:
         self.players[self.big_blind_player - 1].change_money(-amount)
 
     def pre_flop(self):
+        self.player_turn = (self.big_blind_player + 1) % len(self.active_players)
+        self.raiser = player_turn
+        while True:
+
+
+            if self.raiser == self.player_turn:
+                break
+
+
         if not self.betting_round():
             return False
         return True
@@ -239,16 +251,17 @@ class TexasHoldEm:
                 self.fold(player)
                 return 'fold'
 
-    def call(self, player):
+    def call(self):
 
-        index = self.players.index(player) - 1
-        if self.players[index].get_player_pot() > player.get_player_pot():  # if the player before has more in the pot
-            diff = self.players[index].get_player_pot() - player.get_player_pot()
+
+        if self.players[self.player_turn].get_player_pot() > player.get_player_pot():  # if the player before has more in the pot
+            diff = self.players[self.player_turn].get_player_pot() - player.get_player_pot()
             self.pot = self.pot + diff
             player.change_player_pot(diff)
             player.change_money(-diff)
+        print(f'{self.players[self.player_turn].get_name()} has called.')
 
-    def poker_raise(self, player):
+    def poker_raise(self, amount):
         # ask with the GUI how much should raise
         while True:
             amount = int(input('How much do you want to raise with?'))
@@ -260,6 +273,9 @@ class TexasHoldEm:
         self.pot = self.pot + amount
         player.change_player_pot(amount)
         player.change_money(-amount)
+        self.raiser = self.player_turn
+
+        print(f'{self.players[self.player_turn].get_name()} has called.')
 
     def fold(self, player):
 
