@@ -5,8 +5,7 @@ from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 
 
-# vad händer om en person raisear mer än vad du har
-# rasieing problemet med
+
 
 # Community_Card Changes
 # Player Turn
@@ -42,15 +41,19 @@ class Player():
 
     def change_money(self, amount):
         self.money = self.money + amount
-        if self.money <= 0:
-            print('No money')  # ha ett stop här eller någon annanstans
 
     def poker_hand_value(self, community_cards):
         return self.hand.best_poker_hand(community_cards.cards)
 
 
-class TexasHoldEm:
+class TexasHoldEm(QObject):
+    warning = pyqtSignal(str,)
+    update_turn = pyqtSignal()
+    update_value = pyqtSignal()
+    p_winner = pyqtSignal()
+    g_winner = pyqtSignal()
     def __init__(self):
+        super().__init__()
         self.players = []
         self.active_players = []
         self.player_turn = 0
@@ -70,10 +73,11 @@ class TexasHoldEm:
         for i in range(len(self.players)):
             self.active_players.append(1)
         self.hand_out_cards()
+        self.big_and_little_blind()
 
     def reset_pot(self):
-        print(f'{self.players[0].check_money()} has money')
-        print(f'{self.players[1].check_money()} has money')
+        print(f'{self.players[0].check_money()} has money John')
+        print(f'{self.players[1].check_money()} has money martin')
         if not self.check_game():
             print('game winner')
             self.game_winner()
@@ -83,8 +87,10 @@ class TexasHoldEm:
 
         self.big_blind_player = (self.big_blind_player + 1) % len(self.players)
         self.pot = 0
+        self.round_counter = 0
 
         self.hand_out_cards()
+        self.big_and_little_blind()
 
     def hand_out_cards(self):
         self.deck = StandardDeck()
@@ -133,7 +139,7 @@ class TexasHoldEm:
         elif self.round_counter == 4:
             self.showdown()
         else:
-            print('error')
+            print('too high round number')
 
     def showdown(self):
         best_poker_hands_list = []
@@ -170,6 +176,8 @@ class TexasHoldEm:
             return True
 
     def call(self):
+        print(f'{self.players[0].check_money()} has money John')
+        print(f'{self.players[1].check_money()} has money martin')
         index = (self.player_turn - 1) % len(self.active_players)
         if self.players[index].get_player_pot() > self.players[self.player_turn].get_player_pot():  # if the player before has more in the pot
             diff = self.players[index].get_player_pot() - self.players[self.player_turn].get_player_pot()
@@ -183,8 +191,10 @@ class TexasHoldEm:
         self.check_round()
 
     def poker_raise(self, amount):
+        print(f'{self.players[self.player_turn].check_money()} has money {self.players[self.player_turn].get_name()}')
 
-        if amount > self.players[self.player_turn].check_money() and amount <= 0:
+
+        if amount > self.players[self.player_turn].check_money() or amount <= 0:
             self.warning.emit('Not a valid raise')
         else:
             self.pot = self.pot + amount
@@ -192,18 +202,19 @@ class TexasHoldEm:
             self.players[self.player_turn].change_money(-amount)
             self.raiser = self.player_turn
 
+            print(f'{self.players[self.player_turn].get_name()} has raised with ${amount}.')
             self.call_counter = 0
             self.next_turn()
-            print(f'{self.players[self.player_turn].get_name()} has raised with ${amount}.')
 
     def fold(self):
-
         self.remove_active_player()
         print(f'{self.players[self.player_turn].name} has folded.')
         self.pot_winner()
 
     def next_turn(self):
         self.player_turn = (self.player_turn + 1) % len(self.active_players)
+        self.update_turn.emit()
+
 
     def remove_active_player(self):
         self.active_players[self.player_turn] = 0
@@ -225,6 +236,7 @@ class TexasHoldEm:
         for i, player in enumerate(self.players):  # checks who has the money
             if not player.check_money() == 0:
                 print(f'The winner of the game is {player.get_name()}')
+                self.g_winner
                 return i
 
 
