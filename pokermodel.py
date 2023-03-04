@@ -12,8 +12,7 @@ from PyQt5.QtWidgets import *
 # Player Winner
 # Game Winner
 
-#en call vid river avslutar ronden
-#fixa all in
+
 
 class Player():
     def __init__(self, name):
@@ -82,8 +81,8 @@ class TexasHoldEm(QObject):
         print(f'{self.players[0].check_money()} has money John')
         print(f'{self.players[1].check_money()} has money martin')
         if not self.check_game():
-            print('game winner')
             self.game_winner()
+            return
 
         for player in self.players:
             player.reset_player_pot()
@@ -125,7 +124,8 @@ class TexasHoldEm(QObject):
         self.players[(self.big_blind_player - 1) % len(self.active_players)].change_money(-amount)
 
     def check_round(self):
-        if self.call_counter > len(self.players):
+        if self.call_counter >= len(self.players):
+            self.call_counter = 0
             self.round_counter += 1
             self.round()
 
@@ -134,10 +134,13 @@ class TexasHoldEm(QObject):
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
+            print('flop')
         elif self.round_counter == 2:
             self.community_cards.add_card(self.deck.draw())
+            print('turn')
         elif self.round_counter == 3:
             self.community_cards.add_card(self.deck.draw())
+            print('river')
             print(self.community_cards.cards)
         elif self.round_counter == 4:
             self.showdown()
@@ -179,6 +182,7 @@ class TexasHoldEm(QObject):
             return True
 
     def call(self):
+
         index = (self.player_turn - 1) % len(self.active_players)
         if self.players[index].get_player_pot() > self.players[self.player_turn].get_player_pot():  # if the player before has more in the pot
             diff = self.players[index].get_player_pot() - self.players[self.player_turn].get_player_pot()
@@ -188,8 +192,8 @@ class TexasHoldEm(QObject):
 
         print(f'{self.players[self.player_turn].get_name()} has called.')
         self.call_counter += 1
-        self.next_turn()
         self.check_round()
+        self.next_turn()
 
     def poker_raise(self, amount):
         if self.players[self.player_turn].check_money() == 0:
@@ -221,11 +225,12 @@ class TexasHoldEm(QObject):
     def next_turn(self):
         self.player_turn = (self.player_turn + 1) % len(self.active_players)
         print(f'It is {self.players[self.player_turn].get_name()} turn, you have ${self.players[self.player_turn].check_money()}')
+        if self.players[self.player_turn].check_money() == 0:
+            self.all_in()
         self.update_turn.emit()
 
     def all_in(self):
-        if self.round_counter == 0:
-            print('the')
+        self.call()
 
     def remove_active_player(self):
         self.active_players[self.player_turn] = 0
@@ -248,15 +253,14 @@ class TexasHoldEm(QObject):
             if not player.check_money() == 0:
                 print(f'The winner of the game is {player.get_name()}')
                 self.g_winner
+
                 return i
 
 
 
 t = TexasHoldEm()
 
-#for i in range(2):
-t.poker_raise(9950)
-t.poker_raise(9900)
+#for i in range(8):
+   # t.call()
 
-for i in range(6):
-    t.call()
+
