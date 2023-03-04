@@ -51,6 +51,7 @@ class TexasHoldEm(QObject):
     warning = pyqtSignal(str,)
     update_turn = pyqtSignal()
     update_value = pyqtSignal()
+    update_round = pyqtSignal()
     p_winner = pyqtSignal()
     g_winner = pyqtSignal()
     def __init__(self):
@@ -90,6 +91,7 @@ class TexasHoldEm(QObject):
         self.big_blind_player = (self.big_blind_player + 1) % len(self.players)
         self.pot = 0
         self.round_counter = 0
+        self.update_round.emit()
 
         self.hand_out_cards()
         self.big_and_little_blind()
@@ -134,12 +136,15 @@ class TexasHoldEm(QObject):
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
+            self.update_round.emit()
             print('flop')
         elif self.round_counter == 2:
             self.community_cards.add_card(self.deck.draw())
+            self.update_round.emit()
             print('turn')
         elif self.round_counter == 3:
             self.community_cards.add_card(self.deck.draw())
+            self.update_round.emit()
             print('river')
             print(self.community_cards.cards)
         elif self.round_counter == 4:

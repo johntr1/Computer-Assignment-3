@@ -16,7 +16,7 @@ import sys
 
 
 class PlayerView(QGroupBox):
-    def __init__(self, game, cards):
+    def __init__(self, game):
         super().__init__()
         self.game = game
         #      self.player = player  # player is player name
@@ -60,12 +60,14 @@ class PokerButtons(QWidget):
 
 
 class PokerBoardView(QWidget):
-    def __init__(self, table_cards):
+    def __init__(self, game):
         super().__init__()
+        self.game = game
         layout = QHBoxLayout()
-        layout.addWidget(CardsView(table_cards, card_spacing=250))
+        layout.addWidget(CardsView(HandModel(self.game.community_cards.cards), card_spacing=250))
         self.setLayout(layout)
-
+    def update_value(self):
+        self.card_view.update_view()
 
 class InformationBox(QWidget):
     def __init__(self, game):
@@ -84,9 +86,9 @@ class PokerView(QWidget):
 
         layout = QGridLayout()
 
-        layout.addWidget(PlayerView(game, cards2), 3, 1)
+        layout.addWidget(PlayerView(game), 3, 1)
         layout.addWidget(PokerButtons(cards2, game), 3, 0)
-        layout.addWidget(PokerBoardView(cards), 0, 0, 2, 4)
+        layout.addWidget(PokerBoardView(game), 0, 0, 2, 4)
         self.setLayout(layout)
 
         self.game.warning.connect(self.alert_warning)
@@ -121,6 +123,9 @@ class MainWindow(QMainWindow):
 
         # Connect signals
         self.game.update_turn.connect(self.update_player_turn_label)
+        #self.game.update_value.connect(self.update_values)
+        #self.game.p_winner.connect(self.pot_winner)
+        #self.game.g_winner.connect(self.game_winner)
 
         self.player_turn = QLabel(f'{self.game.players[self.game.player_turn].get_name()}s tur')
         status.addWidget(self.player_turn)
@@ -129,6 +134,7 @@ class MainWindow(QMainWindow):
 
     def update_player_turn_label(self):
         self.player_turn.setText(f'{self.game.players[self.game.player_turn].get_name()}s tur')
+
 
 
 """
@@ -149,8 +155,8 @@ app.exec_()
 hand = Hand()
 hand.add_card(NumberedCard(2, Suit.Hearts))
 hand.add_card(KingCard(Suit.Spades))
-hand.add_card(NumberedCard(2, Suit.Diamonds))
-hand.add_card(KingCard(Suit.Clubs))
+hand.add_card(NumberedCard(2, Suit.Clubs))
+hand.add_card(KingCard(Suit.Diamonds))
 hand.add_card(KingCard(Suit.Spades))
 # hand.add_card(NumberedCard(2, Suit.Spades))
 
