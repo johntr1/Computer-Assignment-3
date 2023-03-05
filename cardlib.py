@@ -159,6 +159,11 @@ class Hand:
     def __init__(self):
         self.cards = []
 
+    def __str__(self):
+        text = [str(x) for idx, x in enumerate(self.cards)]
+        text = ', '.join(text)
+        return text
+
     def add_card(self, draw):
         """
         Adds the top card from the deck to the hand
@@ -197,7 +202,7 @@ class Hand:
         for i in drop_list:
             del self.cards[i]
 
-    def best_poker_hand(self, cards):
+    def best_poker_hand(self, cards=[]):
         """
         Adds the hand's cards and the external cards from the table to create a list of all available cards
         to combine with and make a poker hand. The method calls on the PokerHand class with the cards as input to
@@ -206,6 +211,8 @@ class Hand:
         :return poker_hand:
         """
 
+        if cards is None:
+            cards = []
         card_list = self.cards + cards
         card_list.sort()
         poker_hand = PokerHand(card_list)
@@ -435,22 +442,22 @@ class PokerHand:
         if 14 in values:
             values = [1] + values
         # Remove of the same rank:
-        values = sorted(set(values), key=values.index)
+        values = sorted(set(values), key=values.index, reverse=True)
         counter = 0
         li = []
         # Iterates through the values
         for i in range(len(values) - 1):
             # If the difference is 1 add to the counter and append the value to list
-            if values[i + 1] - values[i] == 1:
+            if values[i] - values[i+1] == 1:
                 counter += 1
-                li.append(values[i+1])
+                li.append(values[i])
             elif counter < 4:
                 # Otherwise reset counter and list if the counter is less than four
                 counter = 0
                 li = []
 
             if counter >= 4:
-                return li[-1],
+                return li[0],
 
     def check_three_of_a_kind(self, count):
         """
