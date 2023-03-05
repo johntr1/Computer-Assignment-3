@@ -34,7 +34,7 @@ class PlayerView(QGroupBox):
         self.layout.removeWidget(self.card_view)
         self.card_view.deleteLater()
         self.card_view = CardsView(self.game.player_cards, card_spacing=50)
-        self.layout.addWidget(self.card_view)
+        self.layout.insertWidget(self.card_view)
 
 
 
@@ -85,7 +85,7 @@ class PokerBoardView(QWidget):
         self.layout.removeWidget(self.card_view)
         self.card_view.deleteLater()
         self.card_view = CardsView(self.game.community_cards_model, card_spacing=250)
-        self.layout.addWidget(self.card_view)
+        self.layout.insertWidget(self.card_view)
 
 
 
