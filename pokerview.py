@@ -15,7 +15,7 @@ import sys
 # QErrorMessage
 
 
-class PlayerView(QGroupBox):
+class PlayerView(QWidget):
     def __init__(self, game):
         super().__init__()
         self.game = game
@@ -34,7 +34,7 @@ class PlayerView(QGroupBox):
         self.layout.removeWidget(self.card_view)
         self.card_view.deleteLater()
         self.card_view = CardsView(self.game.player_cards, card_spacing=50)
-        self.layout.insertWidget(self.card_view)
+        self.layout.addWidget(self.card_view)
 
 
 
@@ -73,7 +73,7 @@ class PokerBoardView(QWidget):
         super().__init__()
         self.game = game
         self.layout = QHBoxLayout(self)
-        self.card_view = CardsView(HandModel(self.game.community_cards.cards), card_spacing=250)
+        self.card_view = CardsView(HandModel(self.game.community_cards.cards), card_spacing=240)
         self.layout.addWidget(self.card_view)
         self.setLayout(self.layout)
         self.game.update_round.connect(self.update_cards)
@@ -82,10 +82,11 @@ class PokerBoardView(QWidget):
         self.card_view.update_view()
 
     def update_cards(self):
+        # Inspired by internet
         self.layout.removeWidget(self.card_view)
         self.card_view.deleteLater()
-        self.card_view = CardsView(self.game.community_cards_model, card_spacing=250)
-        self.layout.insertWidget(self.card_view)
+        self.card_view = CardsView(self.game.community_cards_model, card_spacing=240)
+        self.layout.addWidget(self.card_view)
 
 
 
