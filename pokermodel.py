@@ -181,7 +181,6 @@ class TexasHoldEm(QObject):
             best_poker_hands_list.append(player.poker_hand_value(self.community_cards))
 
         best_hand_index = best_poker_hands_list.index(max(best_poker_hands_list))
-        print(best_hand_index)
 
         for i in range(len(self.active_players)):
             self.active_players[i] = 0
@@ -264,16 +263,16 @@ class TexasHoldEm(QObject):
     def remove_active_player(self):
         self.active_players[self.player_turn] = 0
 
-    def pot_winner(self):
+    def pot_winner(self):#gets the winner and hands out the money to the winner
 
         winner_index = self.active_players.index(1)
         player_winner = self.players[winner_index]
-        if player_winner.get_player_pot() * 2 < self.pot:
+        if player_winner.get_player_pot() * 2 < self.pot:#If one person has done an all in but has less money in the pot
             player_winner.change_money(player_winner.get_player_pot() * 2)
         else:
             player_winner.change_money(self.pot)
 
-        if not self.folded:
+        if not self.folded:#if you fold you should not see what hand the other person had
             self.pop_up.emit(
                 f'The winner of the pot is {self.players[winner_index].name} with the total of ${self.pot} and with the hand '
                 f'{str(self.players[winner_index].poker_hand_value(self.community_cards)).replace("_", " ").lower()}')
@@ -287,11 +286,11 @@ class TexasHoldEm(QObject):
                 f'The winner of the pot is {self.players[winner_index].name} with the total of ${self.pot}')
         self.reset_pot()
 
-    def game_winner(self):
+    def game_winner(self):#Is only run if there only is one player with money
 
         for i, player in enumerate(self.players):  # checks who has the money
             if not player.check_money() == 0:
                 print(f'The winner of the game is {player.get_name()}')
                 self.pop_up.emit(f'The winner of the game is {player.get_name()}. Thanks for playing!')
-
+                #Sends two emits one for a pop up and one to en the game
         self.quit.emit()

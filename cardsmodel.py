@@ -34,33 +34,7 @@ class CardsModel(QObject, metaclass=QABCMeta):
 
 
 
-# A trivial card class (you should use the stuff you made in your library instead!)
-"""
-class MySimpleCard:
-    def __init__(self, value, suit):
-        self.value = value
-        self.suit = suit
 
-    def get_value(self):
-        return self.value
-"""
-
-# You have made a class similar to this (hopefully):
-"""
-class Hand:
-    def __init__(self):
-        # Lets use some hardcoded values for most of this to start with
-        self.cards = [MySimpleCard(13, 2), MySimpleCard(7, 0), MySimpleCard(13, 1)]
-
-    def add_card(self, card):
-        self.cards.append(card)
-"""
-
-
-# We can extend this class to create a model, which updates the view whenever it has changed.
-# NOTE: You do NOT have to do it this way.
-# You might find it easier to make a Player-model, or a whole GameState-model instead.
-# This is just to make a small demo that you can use. You are free to modify
 class HandModel(CardsModel):
     def __init__(self, cards):
         self.cards = cards
