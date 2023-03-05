@@ -238,6 +238,7 @@ class TexasHoldEm(QObject):
         print(f'It is {self.players[self.player_turn].get_name()} turn, you have ${self.players[self.player_turn].check_money()}')
         if self.players[self.player_turn].check_money() == 0:
             self.all_in()
+        self.player_cards = HandModel(self.players[self.player_turn].hand.cards)
         self.update_turn.emit()
 
     def all_in(self):

@@ -20,12 +20,22 @@ class PlayerView(QGroupBox):
         super().__init__()
         self.game = game
         #      self.player = player  # player is player name
-        layout = QVBoxLayout()
+        self.layout = QVBoxLayout()
+        self.card_view = CardsView(self.game.player_cards, card_spacing=50)
         #       player_turn = QLabel()
         #      player_turn.setText(f"{self.player}s tur")
         #    layout.addWidget(player_turn)
-        layout.addWidget(CardsView(self.game.player_cards, card_spacing=50))
-        self.setLayout(layout)
+        self.layout.addWidget(self.card_view)
+        self.setLayout(self.layout)
+
+        self.game.update_turn.connect(self.update_cards)
+
+    def update_cards(self):
+        self.layout.removeWidget(self.card_view)
+        self.card_view.deleteLater()
+        self.card_view = CardsView(self.game.player_cards, card_spacing=50)
+        self.layout.addWidget(self.card_view)
+
 
 
 class PokerButtons(QWidget):
