@@ -159,7 +159,7 @@ class MainWindow(QMainWindow):
         self.app = app
         self.setWindowTitle("CA3 Group 19")
         self.setFixedHeight(700)
-        self.setFixedWidth(850)
+        self.setFixedWidth(1000)
         self.setCentralWidget(PokerView(game))
 
         status = QStatusBar()
