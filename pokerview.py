@@ -12,7 +12,7 @@ class PlayerView(QWidget):
         self.layout = QVBoxLayout()
 
         # Add widgets
-        
+
         self.card_view = CardsView(self.game.player_cards_list[self.game.player_turn], card_spacing=50)
         self.layout.addWidget(self.card_view)
 
@@ -153,7 +153,7 @@ class PokerView(QWidget):
         self.game.pop_up.connect(self.pop_up_window)
 
     @staticmethod
-    def pop_up_window(self, text: str):
+    def pop_up_window(text: str):
         # Creates a popup box if getting called by a signal
         msg = QMessageBox()
         msg.setText(text)
