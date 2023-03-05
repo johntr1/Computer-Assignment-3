@@ -17,7 +17,9 @@ class Player():
         self.name = name
         self.hand = None
         self.money = 10000
-        self.player_pot = 0 #How much money the player has in the pot
+        # How much money the player has in the pot
+        self.player_pot = 0
+
 
     def create_new_hand(self):
         self.hand = Hand()
