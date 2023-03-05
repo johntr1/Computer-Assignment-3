@@ -33,6 +33,7 @@ class CardsModel(QObject, metaclass=QABCMeta):
         """Returns true of cards should be drawn face down"""
 
 
+
 # A trivial card class (you should use the stuff you made in your library instead!)
 """
 class MySimpleCard:

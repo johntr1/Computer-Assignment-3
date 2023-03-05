@@ -4,24 +4,15 @@ from PyQt5.QtWidgets import *
 from cardsview import CardsView
 from cardlib import *
 from cardsmodel import HandModel
+from pokermodel import *
 import sys
 
-qt_app = QApplication(sys.argv)
+hand = Hand()
+hand.add_card(JackCard(Suit.Spades))
+hand.add_card(KingCard(Suit.Hearts))
 
-data = ["one", "two", "three", "four", "five"]
+cards = HandModel(hand.cards)
+print(cards)
+cards.cards.append(NumberedCard(2, Suit.Spades))
+print(cards)
 
-model = QStringListModel(data)
-# We can hook in anything
-# model.dataChanged.connect(lambda idx: print("The data was modified!", idx.row()))
-"""
-combobox = QComboBox()
-combobox.setModel(model)
-combobox.show()
-"""
-listView = QListView()
-listView.setModel(model)
-listView.show()
-
-qt_app.exec_()
-
-print(model)

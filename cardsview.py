@@ -79,8 +79,6 @@ class CardsView(QGraphicsView):
         for i, card in enumerate(self.model):
             # The ID of the card in the dictionary of images is a tuple with (value, suit), both integers
             graphics_key = (card.get_value(), card.suit.value)
-            print(graphics_key)
-            print(self.all_cards)
             renderer = self.back_card if self.model.flipped() else self.all_cards[graphics_key]
             c = CardItem(renderer, i)
 
