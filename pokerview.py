@@ -63,7 +63,7 @@ class PokerBoardView(QWidget):
         super().__init__()
         self.game = game
         self.layout = QHBoxLayout(self)
-        self.card_view = CardsView(self.game.community_cards_model, card_spacing=250)
+        self.card_view = CardsView(HandModel(self.game.community_cards.cards), card_spacing=250)
         self.layout.addWidget(self.card_view)
         self.setLayout(self.layout)
         self.game.update_round.connect(self.update_cards)
