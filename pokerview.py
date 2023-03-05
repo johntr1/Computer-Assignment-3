@@ -1,3 +1,9 @@
+# Author:
+# John Tran
+# Martin Diderholm
+# Date: 05/03/2023
+# Group 19
+
 from cardsview import CardsView
 from pokermodel import *
 
@@ -12,7 +18,7 @@ class PlayerView(QWidget):
         self.layout = QVBoxLayout()
 
         # Add widgets
-        
+
         self.card_view = CardsView(self.game.player_cards_list[self.game.player_turn], card_spacing=50)
         self.layout.addWidget(self.card_view)
 
@@ -60,7 +66,7 @@ class PokerButtons(QWidget):
         self.game.update_turn.connect(self.update_flip)
 
     def update_flip(self):
-        # Updates the widget depending player
+        # Updates the widget depending on player
         idx = self.layout.indexOf(self.flip_button)
         self.layout.removeWidget(self.flip_button)
         self.flip_button.deleteLater()

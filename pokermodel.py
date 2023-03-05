@@ -1,16 +1,15 @@
+# Author:
+# John Tran
+# Martin Diderholm
+# Date: 05/03/2023
+# Group 19
+
 from cardlib import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 from cardsmodel import HandModel
-
-
-# Community_Card Changes
-# Player Turn
-# Player Winner
-# Game Winner
-
 
 class Player():
     def __init__(self, name):
