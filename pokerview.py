@@ -7,14 +7,6 @@ from cardsmodel import HandModel
 from pokermodel import *
 import sys
 
-
-# QApplication
-# QMainWindow
-# QInputDialog
-# QMessageBox
-# QErrorMessage
-
-
 class PlayerView(QWidget):
     def __init__(self, game):
         super().__init__()
@@ -124,12 +116,6 @@ class InformationBox(QWidget):
             f"Opponent's money in the pot: {self.game.players[self.game.player_turn - 1].player_pot}")
         self.opponent_money.setText(f"Opponent's total money: {self.game.players[self.game.player_turn - 1].money}")
 
-        # Lägg till layouts:
-        # Motståndarens pengar
-        # Hur mycket är i potten
-        # Vad motståndaren har ökat med
-
-
 class PokerView(QWidget):
     def __init__(self, game):
         super().__init__()
@@ -190,43 +176,3 @@ class MainWindow(QMainWindow):
 
     def quit_window(self):
         app.quit()
-
-
-"""
-app = QApplication(sys.argv)
-import sys
-
-window = MainWindow(app)
-window.show()
-app.exec()
-
-
-# Runs all classes
-class PokerView(QWidget):
-    '
-app.exec_()
-"""
-# deck = StandardDeck()
-hand = Hand()
-hand.add_card(NumberedCard(2, Suit.Hearts))
-hand.add_card(KingCard(Suit.Spades))
-hand.add_card(NumberedCard(2, Suit.Clubs))
-hand.add_card(KingCard(Suit.Diamonds))
-hand.add_card(KingCard(Suit.Spades))
-# hand.add_card(NumberedCard(2, Suit.Spades))
-
-cards = HandModel(hand.cards)
-
-hand2 = Hand()
-
-hand2.add_card(NumberedCard(2, Suit.Spades))
-hand2.add_card(KingCard(Suit.Spades))
-cards2 = HandModel(hand2.cards)
-
-app = QApplication(sys.argv)
-
-game = TexasHoldEm()
-
-window = MainWindow(app, game)
-window.show()
-app.exec_()
