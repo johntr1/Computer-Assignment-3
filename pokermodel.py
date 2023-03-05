@@ -3,7 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
-
+from cardsmodel import HandModel
 
 
 
@@ -66,6 +66,7 @@ class TexasHoldEm(QObject):
         self.community_cards = Hand()
         self.round_counter = 0
         self.call_counter = 0
+        self.community_cards_model = HandModel(self.community_cards.cards)
 
         # start the gui and for players and names
         # put the 2 players in the self.players list
@@ -77,6 +78,8 @@ class TexasHoldEm(QObject):
         self.hand_out_cards()
         self.big_and_little_blind()
         self.update_turn.emit()
+        self.player_cards = HandModel(self.players[self.player_turn].hand.cards)
+
 
     def reset_pot(self):
         print(f'{self.players[0].check_money()} has money John')
@@ -136,14 +139,17 @@ class TexasHoldEm(QObject):
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
             self.community_cards.add_card(self.deck.draw())
+            self.community_cards_model = HandModel(self.community_cards)
             self.update_round.emit()
             print('flop')
         elif self.round_counter == 2:
             self.community_cards.add_card(self.deck.draw())
+            self.community_cards_model = HandModel(self.community_cards)
             self.update_round.emit()
             print('turn')
         elif self.round_counter == 3:
             self.community_cards.add_card(self.deck.draw())
+            self.community_cards_model = HandModel(self.community_cards)
             self.update_round.emit()
             print('river')
             print(self.community_cards.cards)
@@ -257,13 +263,13 @@ class TexasHoldEm(QObject):
         for i, player in enumerate(self.players):  # checks who has the money
             if not player.check_money() == 0:
                 print(f'The winner of the game is {player.get_name()}')
-                self.g_winner
+           #     self.g_winner
 
                 return i
 
 
 
-t = TexasHoldEm()
+#t = TexasHoldEm()
 
 #for i in range(8):
    # t.call()

@@ -4,7 +4,7 @@ from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 from cardlib import *
 
-from cardsmodel import CardsModel
+from cardsmodel import *
 
 
 # NOTE: This is just given as an example of how to use CardsView.
@@ -164,3 +164,4 @@ player_view = TestWindow(hand)
 player_view.show()
 qt_app.exec_()
 """
+
