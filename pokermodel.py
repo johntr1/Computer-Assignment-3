@@ -172,7 +172,7 @@ class TexasHoldEm(QObject):
             print('Showdown')
             self.showdown()
         else:
-            print('too high round number')
+            print('Too high round number')
 
     def showdown(self):#Checks a the poker hand values for all the players and changes the active player list
                         #so only the one with the best hand wins
