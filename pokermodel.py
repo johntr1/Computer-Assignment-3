@@ -168,7 +168,6 @@ class TexasHoldEm(QObject):
             self.community_cards_model.cards.append(self.community_cards.cards[-1])
             self.update_round.emit()
             print('River')
-            print(self.community_cards.cards)
         elif self.round_counter == 4:
             print('Showdown')
             self.showdown()
