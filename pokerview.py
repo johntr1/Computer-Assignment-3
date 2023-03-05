@@ -7,12 +7,13 @@ class PlayerView(QWidget):
     def __init__(self, game):
         super().__init__()
         self.game = game
-        #      self.player = player  # player is player name
+
+        # Define layout
         self.layout = QVBoxLayout()
+
+        # Add widgets
+        
         self.card_view = CardsView(self.game.player_cards_list[self.game.player_turn], card_spacing=50)
-        #       player_turn = QLabel()
-        #      player_turn.setText(f"{self.player}s tur")
-        #    layout.addWidget(player_turn)
         self.layout.addWidget(self.card_view)
 
         self.setLayout(self.layout)
