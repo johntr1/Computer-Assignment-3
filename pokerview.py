@@ -93,7 +93,22 @@ class PokerBoardView(QWidget):
 class InformationBox(QWidget):
     def __init__(self, game):
         super().__init__()
-        layout = QVBoxLayout()
+        self.game = game
+        self.layout = QVBoxLayout()
+        self.player_money = QLabel()
+        self.player_pot = QLabel()
+        self.total_pot = QLabel()
+        self.opponent_raise = QLabel()
+
+        self.layout.addWidget(self.player_money)
+
+        self.game.update_turn.connect(self.update_information)
+        self.setLayout(self.layout)
+
+    def update_information(self):
+        self.player_money.setText(f'{self.game.players[self.game.player_turn].get_name()}s pengar: {self.game.players[self.game.player_turn].money}')
+
+
         # Lägg till layouts:
         # Motståndarens pengar
         # Hur mycket är i potten
@@ -109,7 +124,8 @@ class PokerView(QWidget):
 
         layout.addWidget(PlayerView(game), 3, 1)
         layout.addWidget(PokerButtons(game), 3, 0)
-        layout.addWidget(PokerBoardView(game), 0, 0, 2, 4)
+        layout.addWidget(PokerBoardView(game), 0, 0, 2, 3)
+        layout.addWidget(InformationBox(game), 3, 2)
         self.setLayout(layout)
 
         self.game.warning.connect(self.alert_warning)
