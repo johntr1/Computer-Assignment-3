@@ -34,7 +34,6 @@ class PlayerView(QWidget):
     def update_cards(self):
         self.layout.removeWidget(self.card_view)
         self.card_view.deleteLater()
-        print(self.game.player_cards_list[self.game.player_turn].cards)
         self.card_view = CardsView(self.game.player_cards_list[self.game.player_turn], card_spacing=50)
         self.layout.addWidget(self.card_view)
 
