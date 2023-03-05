@@ -175,4 +175,4 @@ class MainWindow(QMainWindow):
         self.player_money.setText(f'current money: ${self.game.players[self.game.player_turn].money}')
 
     def quit_window(self):
-        app.quit()
+        self.app.quit()
