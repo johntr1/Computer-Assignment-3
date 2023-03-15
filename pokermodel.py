@@ -15,15 +15,13 @@ from cardsmodel import HandModel
 class Player():
     def __init__(self, name):
         self.name = name
-        self.hand = None
+        self.hand = Hand()
         self.money = 10000
         # How much money the player has in the pot
         self.player_pot = 0
 
-
-    def create_new_hand(self):
-        self.hand = Hand()
-        return self.hand
+    def drop_cards(self):
+        self.hand.drop_all_cards()
 
     def get_name(self):
         return self.name
@@ -115,10 +113,13 @@ class TexasHoldEm(QObject):
         for i, player in enumerate(self.players):
             if self.active_players[i] == 0:  # Only gives cards to active players
                 continue
-            hand = player.create_new_hand()
+            player.drop_cards()
+            print(player.hand.cards)
             for j in range(2):
-                hand.add_card(self.deck.draw())
+                player.hand.add_card(self.deck.draw())
+                print(player.hand.cards)
         for i in range(len(self.players)):
+            print(self.players[i].hand.cards)
             player_cards = HandModel(self.players[i].hand.cards)
             self.player_cards_list[i] = player_cards
 

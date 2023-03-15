@@ -192,6 +192,10 @@ class Hand:
             if not is_swapped:
                 return
 
+    def drop_all_cards(self):
+        del self.cards
+        self.cards = []
+
     def drop_cards(self, drop_list):
         """
             :param drop_list:
