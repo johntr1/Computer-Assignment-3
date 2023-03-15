@@ -58,4 +58,6 @@ class HandModel(CardsModel):
     def add_card(self, card):
         # This method mutates the object, so we must of course 
         super().add_card(card)
+        # Add card:
+        self.cards.append(card)
         self.new_cards.emit()  # something changed, better emit the signal!

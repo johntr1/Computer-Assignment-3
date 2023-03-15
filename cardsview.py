@@ -97,6 +97,11 @@ class CardsView(QGraphicsView):
 
         self.update_view()
 
+    def set_model(self, active_player_hand):
+        self.model = active_player_hand
+        self.__change_cards()
+        self.update_view()
+
     def update_view(self):
         scale = (self.viewport().height() - 2 * self.padding) / 313
         self.resetTransform()
