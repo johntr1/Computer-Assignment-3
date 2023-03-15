@@ -1,16 +1,15 @@
+# Author:
+# John Tran
+# Martin Diderholm
+# Date: 05/03/2023
+# Group 19
+
 from cardlib import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 from cardsmodel import HandModel
-
-
-# Community_Card Changes
-# Player Turn
-# Player Winner
-# Game Winner
-
 
 class Player():
     def __init__(self, name):
@@ -173,7 +172,7 @@ class TexasHoldEm(QObject):
             print('Showdown')
             self.showdown()
         else:
-            print('too high round number')
+            print('Too high round number')
 
     def showdown(self):#Checks a the poker hand values for all the players and changes the active player list
                         #so only the one with the best hand wins

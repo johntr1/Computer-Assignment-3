@@ -1,3 +1,9 @@
+# Author:
+# John Tran
+# Martin Diderholm
+# Date: 05/03/2023
+# Group 19
+
 from cardsview import CardsView
 from pokermodel import *
 
@@ -21,10 +27,7 @@ class PlayerView(QWidget):
         self.game.update_turn.connect(self.update_cards)
 
     def update_cards(self):
-        self.layout.removeWidget(self.card_view)
-        self.card_view.deleteLater()
-        self.card_view = CardsView(self.game.player_cards_list[self.game.player_turn], card_spacing=50)
-        self.layout.addWidget(self.card_view)
+        self.card_view.set_model(self.game.player_cards_list[self.game.player_turn])
 
 
 class PokerButtons(QWidget):
@@ -60,7 +63,7 @@ class PokerButtons(QWidget):
         self.game.update_turn.connect(self.update_flip)
 
     def update_flip(self):
-        # Updates the widget depending player
+        # Updates the widget depending on player
         idx = self.layout.indexOf(self.flip_button)
         self.layout.removeWidget(self.flip_button)
         self.flip_button.deleteLater()
@@ -91,11 +94,8 @@ class PokerBoardView(QWidget):
         self.game.update_round.connect(self.update_cards)
 
     def update_cards(self):
-        # Updates the widget by quickly removing it and replacing it.
-        self.layout.removeWidget(self.card_view)
-        self.card_view.deleteLater()
-        self.card_view = CardsView(self.game.community_cards_model, card_spacing=240)
-        self.layout.addWidget(self.card_view)
+        # Updates the widget
+        self.card_view.set_model(self.game.community_cards_model)
 
 
 class InformationBox(QWidget):

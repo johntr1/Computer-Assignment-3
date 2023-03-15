@@ -1,3 +1,9 @@
+# Author:
+# John Tran
+# Martin Diderholm
+# Date: 05/03/2023
+# Group 19
+
 from pokerview import *
 import sys
 
