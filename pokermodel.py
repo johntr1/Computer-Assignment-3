@@ -41,12 +41,12 @@ class Player:
     def change_money(self, amount):
         self.money = self.money + amount
 
-    def poker_hand_value(self, community_cards):
-        return self.hand.best_poker_hand(community_cards.cards)
+    def poker_hand_value(self, cards, hand):
+        return hand.best_poker_hand(cards + self.hand.cards)
 
 
 class TexasHoldEm(QObject):
-    pop_up = pyqtSignal(str, )  # Signal for errors and winners
+    message = pyqtSignal(str, )  # Signal for errors and winners
     update_turn = pyqtSignal()  # Signal for the player view
     update_value = pyqtSignal()  # Signal for the info view
     update_round = pyqtSignal()  # Signal for the table view
@@ -59,10 +59,11 @@ class TexasHoldEm(QObject):
         self.player_turn = 1
         self.big_blind_player = 0
         self.pot = 0
+        self.empty_hand = Hand()
         self.deck = []
         self.round_counter = 0
         self.call_counter = 0
-        self.community_cards_model = HandModel([])
+        self.community_cards = HandModel([])
         self.folded = False
 
         self.players.append(Player('John'))  # The names of the players
@@ -94,7 +95,7 @@ class TexasHoldEm(QObject):
             self.players)  # So the player starting is after the big blind
         self.pot = 0
         self.round_counter = 0
-        self.community_cards_model.drop_all_cards()
+        self.community_cards.drop_all_cards()
 
         for i in range(len(self.players)):
             self.active_players[i] = 1
@@ -143,18 +144,18 @@ class TexasHoldEm(QObject):
         # also emits  update_round
         if self.round_counter == 1:
 
-            self.community_cards_model.add_card(self.deck.draw())
-            self.community_cards_model.add_card(self.deck.draw())
-            self.community_cards_model.add_card(self.deck.draw())
+            self.community_cards.add_card(self.deck.draw())
+            self.community_cards.add_card(self.deck.draw())
+            self.community_cards.add_card(self.deck.draw())
 
             self.update_round.emit()
             print('Flop')
         elif self.round_counter == 2:
-            self.community_cards_model.add_card(self.deck.draw())
+            self.community_cards.add_card(self.deck.draw())
             self.update_round.emit()
             print('Turn')
         elif self.round_counter == 3:
-            self.community_cards_model.add_card(self.deck.draw())
+            self.community_cards.add_card(self.deck.draw())
             self.update_round.emit()
             print('River')
         elif self.round_counter == 4:
@@ -168,12 +169,13 @@ class TexasHoldEm(QObject):
         best_poker_hands_list = []
 
         for player in self.players:
-            best_poker_hands_list.append(player.poker_hand_value(self.community_cards))
+            best_poker_hands_list.append(player.poker_hand_value(self.community_cards.cards, self.empty_hand))
 
         best_hand_index = best_poker_hands_list.index(max(best_poker_hands_list))
 
-        for i in range(len(self.active_players)):
+        for i, j in enumerate(self.active_players):
             self.active_players[i] = 0
+
         self.active_players[best_hand_index] = 1
         self.pot_winner()
         self.update_turn.emit()
@@ -216,7 +218,7 @@ class TexasHoldEm(QObject):
             self.player_turn].player_pot
 
         if amount + pot_diff > self.players[self.player_turn].check_money() or amount <= 0:
-            self.pop_up.emit('Not a valid raise!')
+            self.message.emit('Not a valid raise!')
         else:
             if not pot_diff == 0:
                 amount = amount + pot_diff
@@ -264,14 +266,14 @@ class TexasHoldEm(QObject):
             player_winner.change_money(self.pot)
 
         if not self.folded:  # if you fold you should not see what hand the other person had
-            self.pop_up.emit(
+            self.message.emit(
                 f'The winner of the pot is {self.players[winner_index].name} with the total of ${self.pot} and with the hand '
-                f'{str(self.players[winner_index].poker_hand_value(self.community_cards)).replace("_", " ").lower()}')
+                f'{str(self.players[winner_index].poker_hand_value(self.community_cards.cards, self.empty_hand)).replace("_", " ").lower()}')
             print(
                 f'The winner of the pot is {self.players[winner_index].name} with the total of ${self.pot} and with the hand '
-                f'{str(self.players[winner_index].poker_hand_value(self.community_cards)).replace("_", " ").lower()}')
+                f'{str(self.players[winner_index].poker_hand_value(self.community_cards.cards, self.empty_hand)).replace("_", " ").lower()}')
         else:
-            self.pop_up.emit(
+            self.message.emit(
                 f'The winner of the pot is {self.players[winner_index].name} with the total of ${self.pot}')
             print(
                 f'The winner of the pot is {self.players[winner_index].name} with the total of ${self.pot}')
@@ -282,6 +284,6 @@ class TexasHoldEm(QObject):
         for i, player in enumerate(self.players):  # checks who has the money
             if not player.check_money() == 0:
                 print(f'The winner of the game is {player.get_name()}')
-                self.pop_up.emit(f'The winner of the game is {player.get_name()}. Thanks for playing!')
+                self.message.emit(f'The winner of the game is {player.get_name()}. Thanks for playing!')
                 # Sends two emits one for a pop up and one to en the game
         self.quit.emit()

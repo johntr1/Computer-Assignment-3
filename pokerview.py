@@ -27,7 +27,7 @@ class PlayerView(QWidget):
         self.game.update_turn.connect(self.update_cards)
 
     def update_cards(self):
-        self.card_view.set_model(self.game.player_cards_list[self.game.player_turn])
+        self.card_view.set_model(self.game.players[self.game.player_turn].hand)
 
 
 class PokerButtons(QWidget):
@@ -63,13 +63,7 @@ class PokerButtons(QWidget):
         self.game.update_turn.connect(self.update_flip)
 
     def update_flip(self):
-        # Updates the widget depending on player
-        idx = self.layout.indexOf(self.flip_button)
-        self.layout.removeWidget(self.flip_button)
-        self.flip_button.deleteLater()
-        self.flip_button = QPushButton('Flip')
-        self.layout.insertWidget(idx, self.flip_button)
-        self.flip_button.clicked.connect(self.game.player_cards_list[self.game.player_turn].flip)
+        self.flip_button.clicked.connect(self.game.players[self.game.player_turn].hand.flip)
 
     def get_input(self):
         # Calls on the poker_raise function if the player presses ok
@@ -86,7 +80,7 @@ class PokerBoardView(QWidget):
         # Define the layout
         self.layout = QHBoxLayout(self)
         # Add the widget by calling on CardsView
-        self.card_view = CardsView(self.game.community_cards_model, card_spacing=240)
+        self.card_view = CardsView(self.game.community_cards, card_spacing=240)
         self.layout.addWidget(self.card_view)
         self.setLayout(self.layout)
 
@@ -95,7 +89,7 @@ class PokerBoardView(QWidget):
 
     def update_cards(self):
         # Updates the widget
-        self.card_view.set_model(self.game.community_cards_model)
+        self.card_view.set_model(self.game.community_cards)
 
 
 class InformationBox(QWidget):
@@ -150,10 +144,10 @@ class PokerView(QWidget):
         self.setLayout(layout)
 
         # Signals
-        self.game.pop_up.connect(self.pop_up_window)
+        self.game.message.connect(self.message_window)
 
     @staticmethod
-    def pop_up_window(text: str):
+    def message_window(text: str):
         # Creates a popup box if getting called by a signal
         msg = QMessageBox()
         msg.setText(text)
