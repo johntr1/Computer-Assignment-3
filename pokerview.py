@@ -19,7 +19,7 @@ class PlayerView(QWidget):
 
         # Add widgets
 
-        self.card_view = CardsView(self.game.player_cards_list[self.game.player_turn], card_spacing=50)
+        self.card_view = CardsView(self.game.players[self.game.player_turn].hand, card_spacing=50)
         self.layout.addWidget(self.card_view)
 
         self.setLayout(self.layout)
@@ -55,7 +55,7 @@ class PokerButtons(QWidget):
         # Add the flip button so that the players can hide their cards
         self.flip_button = QPushButton('Flip')
         self.layout.addWidget(self.flip_button)
-        self.flip_button.clicked.connect(self.game.player_cards_list[self.game.player_turn].flip)
+        self.flip_button.clicked.connect(self.game.players[self.game.player_turn].hand.flip)
 
         self.setLayout(self.layout)
 
