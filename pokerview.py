@@ -55,15 +55,10 @@ class PokerButtons(QWidget):
         # Add the flip button so that the players can hide their cards
         self.flip_button = QPushButton('Flip')
         self.layout.addWidget(self.flip_button)
-        self.flip_button.clicked.connect(self.game.players[self.game.player_turn].hand.flip)
 
+        for i, e in enumerate(self.game.players):  # Loops through all players and make the cards flippable
+            self.flip_button.clicked.connect(self.game.players[i].hand.flip)
         self.setLayout(self.layout)
-
-        # Signals for the flip
-        self.game.update_turn.connect(self.update_flip)
-
-    def update_flip(self):
-        self.flip_button.clicked.connect(self.game.players[self.game.player_turn].hand.flip)
 
     def get_input(self):
         # Calls on the poker_raise function if the player presses ok

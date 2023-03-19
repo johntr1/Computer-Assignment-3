@@ -4,6 +4,8 @@
 # Date: 05/03/2023
 # Group 19
 
+#Empty hand i init,  hur vi ska kalla på poker hand value
+
 from cardlib import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -47,8 +49,7 @@ class Player:
 
 class TexasHoldEm(QObject):
     message = pyqtSignal(str, )  # Signal for errors and winners
-    update_turn = pyqtSignal()  # Signal for the player view
-    update_value = pyqtSignal()  # Signal for the info view
+    update_turn = pyqtSignal()  # signal to let anyone who cares know that the turn was just changed.
     update_round = pyqtSignal()  # Signal for the table view
     quit = pyqtSignal()
 
@@ -80,7 +81,6 @@ class TexasHoldEm(QObject):
         self.player_cards = self.player_cards_list[self.player_turn]
 
         self.update_round.emit()
-        self.update_value.emit()
 
     def reset_pot(self):
         if not self.check_game():
@@ -114,10 +114,8 @@ class TexasHoldEm(QObject):
             if self.active_players[i] == 0:  # Only gives cards to active players
                 continue
             player.drop_cards()
-            print(player.hand.cards)
             for j in range(2):
                 player.hand.add_card(self.deck.draw())
-                print(player.hand.cards)
 
     def big_and_little_blind(self):
 
