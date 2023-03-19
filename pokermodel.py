@@ -11,7 +11,7 @@ from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 from cardsmodel import HandModel
 
-class Player():
+class Player:
     def __init__(self, name):
         self.name = name
         self.hand = Hand()

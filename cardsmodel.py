@@ -1,6 +1,6 @@
 import abc
 from PyQt5.QtCore import QObject, pyqtSignal  # no GUI stuff inside this file!
-from cardlib import Hand
+from cardlib import *
 
 
 # NOTE: This is just given as an example of how to use CardsView.
@@ -31,8 +31,9 @@ class CardsModel(QObject, metaclass=QABCMeta):
     @abc.abstractmethod
     def flip(self):
         """Returns true of cards should be drawn face down"""
-
-
+    @abc.abstractmethod
+    def add_card(self, card):
+        pass
 
 
 class HandModel(CardsModel):
@@ -61,3 +62,9 @@ class HandModel(CardsModel):
         # Add card:
         self.cards.append(card)
         self.new_cards.emit()  # something changed, better emit the signal!
+
+    def drop_all_cards(self):
+        self.cards = []
+        self.new_cards.emit()
+
+

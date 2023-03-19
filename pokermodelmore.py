@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 # rasieing problemet med
 
 
-class Player():
+class Player:
     def __init__(self, name):
         self.name = name
         self.hand = None
